@@ -1,0 +1,22 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Backend_API/Dockerfile
+    depends_on: # the "mssql-db" service will spin up before the "api" service
+      - mssql-db
+    ports: # The api service is on port 80 on the container, and accessible on port 5000 on the host
+      - "5000:80"
+
+  mssql-db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: ${MSSQL_PASSWORD} # Set in a seperate .env file
+    volumes: # makes a volume names "mssql-data", and stores persitent data in the path that follows.
+      - mssql-data:/var/opt/mssql
+    ports:
+      - "1433:1433"
+
+volumes:
+  mssql-data:
