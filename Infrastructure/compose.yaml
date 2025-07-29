@@ -7,6 +7,8 @@ services:
       - mssql-db
     ports: # The api service is on port 80 on the container, and accessible on port 5000 on the host
       - "5000:8080"
+    environment: # Environment variables for the api service
+      - ConnectionStrings__DefaultConnection=${CONNECTION_STRING} # Set in a seperate .env file
 
   mssql-db:
     image: mcr.microsoft.com/mssql/server:2019-latest
