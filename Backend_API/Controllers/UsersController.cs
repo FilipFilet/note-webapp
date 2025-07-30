@@ -36,7 +36,7 @@ public class UsersController : ControllerBase
         User user = new User
         {
             Username = userDto.Username,
-            Password = userDto.Password // Ensure password is hashed in the repository/service
+            Password = userDto.Password
         };
 
         await _userService.AddUserAsync(user);

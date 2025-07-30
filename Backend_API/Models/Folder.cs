@@ -14,6 +14,20 @@ public class Folder
     public List<Note> Notes { get; set; } = new List<Note>();
 }
 
+public class CreateFolderDto
+{
+    [Required]
+    public string Name { get; set; }
+    [Required]
+    public int UserId { get; set; }
+}
+
+public class updateFolderDTO
+{
+    [Required]
+    public string Name { get; set; }
+}
+
 public class GetFolderDto
 {
     public string Name { get; set; }
