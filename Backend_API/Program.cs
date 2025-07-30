@@ -17,6 +17,8 @@ builder.Services.AddDbContext<INotesDBContext, NotesDBContext>(options => option
 
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<INoteService, NoteService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 

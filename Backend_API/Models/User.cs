@@ -21,3 +21,10 @@ public class CreateUserDto
     [Required]
     public string Password { get; set; }
 }
+
+public class GetUserDto
+{
+    public string Username { get; set; }
+    public List<GetNoteDto> Notes { get; set; } = new List<GetNoteDto>();
+    public List<GetFolderDto> Folders { get; set; } = new List<GetFolderDto>();
+}

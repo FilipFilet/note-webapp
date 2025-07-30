@@ -18,13 +18,39 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<User?> GetUserByIdAsync(int id)
+    public async Task<GetUserDto?> GetUserByIdAsync(int id)
     {
-        return await _context.Users.FindAsync(id);
+        return await _context.Users
+            .Where(user => user.Id == id)
+            .Select(user => new GetUserDto
+            {
+                Username = user.Username,
+                Notes = user.Notes.Select(note => new GetNoteDto
+                {
+                    Title = note.Title,
+                    Content = note.Content
+                }).ToList(),
+                Folders = user.Folders.Select(folder => new GetFolderDto
+                {
+                    Name = folder.Name,
+                    Notes = folder.Notes.Select(note => new GetNoteDto
+                    {
+                        Title = note.Title,
+                        Content = note.Content
+                    }).ToList()
+                }).ToList()
+            })
+            .FirstOrDefaultAsync();
     }
 
-    public async Task<List<User>> GetUsersAsync(string username)
+    public async Task<List<CreateUserDto>> GetUsersAsync()
     {
-        return await _context.Users.ToListAsync();
+        return await _context.Users
+            .Select(user => new CreateUserDto
+            {
+                Username = user.Username,
+                Password = user.Password
+            })
+            .ToListAsync();
     }
 }

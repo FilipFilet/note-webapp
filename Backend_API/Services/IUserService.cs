@@ -1,10 +1,8 @@
 using Backend_API.Models;
 
-namespace Backend_API.Repositories;
-
-public interface IUserRepository
+public interface IUserService
 {
+    Task AddUserAsync(User user);
     Task<GetUserDto?> GetUserByIdAsync(int id);
     Task<List<CreateUserDto>> GetUsersAsync();
-    Task AddUserAsync(User user);
 }

@@ -13,3 +13,9 @@ public class Folder
 
     public List<Note> Notes { get; set; } = new List<Note>();
 }
+
+public class GetFolderDto
+{
+    public string Name { get; set; }
+    public List<GetNoteDto> Notes { get; set; } = new List<GetNoteDto>();
+}

@@ -27,3 +27,9 @@ public class CreateNoteDto
     [Required]
     public int UserId { get; set; }
 }
+
+public class GetNoteDto
+{
+    public string Title { get; set; }
+    public string? Content { get; set; }
+}
