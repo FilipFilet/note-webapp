@@ -16,6 +16,13 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(CreateUserDto userDto)
+    {
+        var jwtString = await _userService.ValidateUserAsync(userDto);
+        return Ok(jwtString);
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
@@ -33,13 +40,7 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddUser(CreateUserDto userDto)
     {
-        User user = new User
-        {
-            Username = userDto.Username,
-            Password = userDto.Password
-        };
-
-        await _userService.AddUserAsync(user);
-        return CreatedAtAction(nameof(GetUsersById), new { id = user.Id }, user);
+        var createdUser = await _userService.AddUserAsync(userDto);
+        return CreatedAtAction(nameof(GetUsersById), new { id = createdUser.Id }, createdUser);
     }
 }
