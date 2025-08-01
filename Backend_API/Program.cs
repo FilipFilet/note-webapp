@@ -23,6 +23,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFolderRepository, FolderRepository>();
 builder.Services.AddScoped<IFolderService, FolderService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>

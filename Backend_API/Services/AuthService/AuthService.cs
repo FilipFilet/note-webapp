@@ -3,33 +3,19 @@ using System.Security.Claims;
 using Backend_API.Models;
 using Backend_API.Repositories;
 using Microsoft.IdentityModel.Tokens;
-using static BCrypt.Net.BCrypt;
 
+namespace Backend_API.Services;
 
-
-public class UserService : IUserService
+public class AuthService : IAuthService
 {
     const int BCryptSaltWorkFactor = 12;
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _config;
 
-    public UserService(IUserRepository userRepository, IConfiguration config)
+    public AuthService(IUserRepository userRepository, IConfiguration config)
     {
         _config = config;
         _userRepository = userRepository;
-    }
-
-    public async Task<User> AddUserAsync(CreateUserDto userDto)
-    {
-        User user = new User
-        {
-            Username = userDto.Username,
-            Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password, BCryptSaltWorkFactor)
-        };
-
-        // Add try catch
-        await _userRepository.AddUserAsync(user);
-        return user;
     }
 
     public async Task<String> ValidateUserAsync(CreateUserDto userDto)
@@ -63,13 +49,17 @@ public class UserService : IUserService
         return jwtString;
     }
 
-    public async Task<GetUserDto?> GetUserByIdAsync(int id)
+    public async Task<User> AddUserAsync(CreateUserDto userDto)
     {
-        return await _userRepository.GetUserByIdAsync(id);
+        User user = new User
+        {
+            Username = userDto.Username,
+            Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password, BCryptSaltWorkFactor)
+        };
+
+        // Add try catch
+        await _userRepository.AddUserAsync(user);
+        return user;
     }
 
-    public async Task<List<CreateUserDto>> GetUsersAsync()
-    {
-        return await _userRepository.GetUsersAsync();
-    }
 }

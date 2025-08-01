@@ -16,12 +16,7 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(CreateUserDto userDto)
-    {
-        var jwtString = await _userService.ValidateUserAsync(userDto);
-        return Ok(jwtString);
-    }
+
 
     [HttpGet]
     public async Task<IActionResult> GetUsers()
@@ -35,12 +30,5 @@ public class UsersController : ControllerBase
     {
         GetUserDto user = await _userService.GetUserByIdAsync(id);
         return Ok(user);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> AddUser(CreateUserDto userDto)
-    {
-        var createdUser = await _userService.AddUserAsync(userDto);
-        return CreatedAtAction(nameof(GetUsersById), new { id = createdUser.Id }, createdUser);
     }
 }
