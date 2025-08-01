@@ -1,5 +1,6 @@
 using Backend_API.Models;
 using Backend_API.DBContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend_API.Repositories;
 
@@ -27,5 +28,23 @@ public class FolderRepository : IFolderRepository
     public async Task<Folder?> GetFolderByIdAsync(int folderId)
     {
         return await _context.Folders.FindAsync(folderId);
+    }
+
+    // Should realistically only retrieve the data, not do a conversion to DTO here.
+    // This should be handled in the service layer or controller.
+    public async Task<List<GetFolderDto>> GetFoldersByUserIdAsync(int userId)
+    {
+        return await _context.Folders
+            .Where(folder => folder.UserId == userId)
+            .Select(folder => new GetFolderDto
+            {
+                Name = folder.Name,
+                Notes = folder.Notes.Select(note => new GetNoteDto
+                {
+                    Title = note.Title,
+                    Content = note.Content
+                }).ToList()
+            })
+            .ToListAsync();
     }
 }

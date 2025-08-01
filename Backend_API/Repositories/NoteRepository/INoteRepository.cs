@@ -9,8 +9,8 @@ public interface INoteRepository
     Task<Note> GetNoteByIdAsync(int id);
     Task<List<Note>> GetNotesAsync();
     Task<List<Note>> GetNotesByUserIdAsync(int userId);
-    Task<List<Note>> GetNotesByFolderIdAsync(int folderId);
     Task AddNoteAsync(Note note);
     Task UpdateNoteAsync(Note note);
     Task DeleteNoteAsync(int id);
+    Task<List<Note>> GetIndependentNotesByUserIdAsync(int userId);
 }

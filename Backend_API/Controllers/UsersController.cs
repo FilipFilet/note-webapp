@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Backend_API.Services;
 using Backend_API.Models;
+using System.Security.Claims;
 
 namespace Backend_API.Controllers;
 
@@ -30,5 +31,14 @@ public class UsersController : ControllerBase
     {
         GetUserDto user = await _userService.GetUserByIdAsync(id);
         return Ok(user);
+    }
+
+    [HttpGet("me/content")]
+    public async Task<IActionResult> GetMyContent()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        UserContentDTO content = await _userService.GetUserContentAsync(int.Parse(userId));
+        return Ok(content);
     }
 }

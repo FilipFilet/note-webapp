@@ -4,4 +4,5 @@ public interface IUserService
 {
     Task<GetUserDto?> GetUserByIdAsync(int id);
     Task<List<CreateUserDto>> GetUsersAsync();
+    Task<UserContentDTO> GetUserContentAsync(int userId);
 }

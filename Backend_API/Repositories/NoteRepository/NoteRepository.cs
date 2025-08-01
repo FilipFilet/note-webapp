@@ -34,11 +34,6 @@ public class NoteRepository : INoteRepository
         return await _context.Notes.ToListAsync();
     }
 
-    public async Task<List<Note>> GetNotesByFolderIdAsync(int folderId)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<List<Note>> GetNotesByUserIdAsync(int userId)
     {
         throw new NotImplementedException();
@@ -47,5 +42,12 @@ public class NoteRepository : INoteRepository
     public async Task UpdateNoteAsync(Note note)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<List<Note>> GetIndependentNotesByUserIdAsync(int userId)
+    {
+        return await _context.Notes
+            .Where(note => note.UserId == userId && note.FolderId == null)
+            .ToListAsync();
     }
 }
