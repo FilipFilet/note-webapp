@@ -43,8 +43,29 @@ public class NoteService : INoteService
         throw new NotImplementedException();
     }
 
-    public Task UpdateNoteAsync(Note note)
+    public async Task<UpdateNoteDTO> UpdateNoteAsync(int userid, int id, UpdateNoteDTO updateNoteDTO)
     {
-        throw new NotImplementedException();
+        var note = await _noteRepository.GetNoteByIdAsync(id);
+
+        if (note == null)
+        {
+            throw new KeyNotFoundException($"Note with ID {id} not found.");
+        }
+        else if (note.UserId != userid)
+        {
+            throw new UnauthorizedAccessException("You do not have permission to update this note.");
+        }
+
+        note.Title = updateNoteDTO.Title;
+        note.Content = updateNoteDTO.Content;
+
+        var updatedNote = await _noteRepository.UpdateNoteAsync(note);
+
+        // Return the updated note as a DTO
+        return new UpdateNoteDTO
+        {
+            Title = updatedNote.Title,
+            Content = updatedNote.Content
+        };
     }
 }

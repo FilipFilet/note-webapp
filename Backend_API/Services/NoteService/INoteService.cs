@@ -11,6 +11,6 @@ public interface INoteService
     Task<List<Note>> GetNotesByUserIdAsync(int userId);
     Task<List<Note>> GetNotesByFolderIdAsync(int folderId);
     Task AddNoteAsync(Note note);
-    Task UpdateNoteAsync(Note note);
+    Task<UpdateNoteDTO> UpdateNoteAsync(int userid, int id, UpdateNoteDTO updateNoteDTO);
     Task DeleteNoteAsync(int id);
 }

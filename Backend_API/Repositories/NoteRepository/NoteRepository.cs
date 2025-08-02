@@ -24,9 +24,9 @@ public class NoteRepository : INoteRepository
         throw new NotImplementedException();
     }
 
-    public async Task<Note> GetNoteByIdAsync(int id)
+    public async Task<Note?> GetNoteByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return await _context.Notes.FirstOrDefaultAsync(note => note.Id == id);
     }
 
     public async Task<List<Note>> GetNotesAsync()
@@ -39,9 +39,11 @@ public class NoteRepository : INoteRepository
         throw new NotImplementedException();
     }
 
-    public async Task UpdateNoteAsync(Note note)
+    public async Task<Note> UpdateNoteAsync(Note note)
     {
-        throw new NotImplementedException();
+        _context.Notes.Update(note);
+        await _context.SaveChangesAsync();
+        return note;
     }
 
     public async Task<List<Note>> GetIndependentNotesByUserIdAsync(int userId)

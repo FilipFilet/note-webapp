@@ -25,6 +25,11 @@ public class CreateUserDto
 public class GetUserDto
 {
     public string Username { get; set; }
-    public List<GetNoteDto> Notes { get; set; } = new List<GetNoteDto>();
-    public List<GetFolderDto> Folders { get; set; } = new List<GetFolderDto>();
+}
+
+public class UpdateUserDTO
+{
+    public string Username { get; set; }
+    // Possibly profile picture, email, etc.
+
 }

@@ -2,6 +2,8 @@ using Backend_API.Models;
 using Backend_API.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Backend_API.Repositories;
+using Microsoft.AspNetCore.Identity;
+using BCrypt.Net;
 
 public class UserRepository : IUserRepository
 {
@@ -18,28 +20,10 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<GetUserDto?> GetUserByIdAsync(int id)
+    public async Task<User?> GetUserByIdAsync(int id)
     {
         return await _context.Users
             .Where(user => user.Id == id)
-            .Select(user => new GetUserDto
-            {
-                Username = user.Username,
-                Notes = user.Notes.Select(note => new GetNoteDto
-                {
-                    Title = note.Title,
-                    Content = note.Content
-                }).ToList(),
-                Folders = user.Folders.Select(folder => new GetFolderDto
-                {
-                    Name = folder.Name,
-                    Notes = folder.Notes.Select(note => new GetNoteDto
-                    {
-                        Title = note.Title,
-                        Content = note.Content
-                    }).ToList()
-                }).ToList()
-            })
             .FirstOrDefaultAsync();
     }
 
@@ -58,5 +42,12 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users
             .FirstOrDefaultAsync(user => user.Username == username);
+    }
+
+    public async Task<User?> UpdateUserAsync(User user)
+    {
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+        return user;
     }
 }

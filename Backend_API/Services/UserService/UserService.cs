@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Backend_API.Models;
 using Backend_API.Repositories;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.IdentityModel.Tokens;
 using static BCrypt.Net.BCrypt;
 
@@ -23,24 +24,36 @@ public class UserService : IUserService
 
     public async Task<GetUserDto?> GetUserByIdAsync(int id)
     {
-        return await _userRepository.GetUserByIdAsync(id);
-    }
+        var user = await _userRepository.GetUserByIdAsync(id);
 
-    public async Task<List<CreateUserDto>> GetUsersAsync()
-    {
-        return await _userRepository.GetUsersAsync();
+        if (user == null) throw new KeyNotFoundException("User not found");
+
+        var retrievedUser = new GetUserDto
+        {
+            Username = user.Username
+        };
+
+        return retrievedUser;
     }
 
     public async Task<UserContentDTO> GetUserContentAsync(int userId)
     {
         var user = await _userRepository.GetUserByIdAsync(userId);
-        if (user == null)
-        {
-            return null;
-        }
+        if (user == null) throw new KeyNotFoundException("User not found");
 
         var folders = await _folderRepository.GetFoldersByUserIdAsync(userId);
         var independentNotes = await _noteRepository.GetIndependentNotesByUserIdAsync(userId);
+
+        // Converting raw data to DTOs
+        var foldersDTO = folders.Select(folder => new GetFolderDto
+        {
+            Name = folder.Name,
+            Notes = folder.Notes.Select(note => new GetNoteDto
+            {
+                Title = note.Title,
+                Content = note.Content
+            }).ToList()
+        }).ToList();
 
         var IndependentNotesDTO = independentNotes.Select(note => new GetNoteDto
         {
@@ -51,8 +64,25 @@ public class UserService : IUserService
 
         return new UserContentDTO
         {
-            Folders = folders,
+            Folders = foldersDTO,
             Notes = IndependentNotesDTO
+        };
+    }
+
+    public async Task<UpdateUserDTO?> UpdateUserAsync(int id, UpdateUserDTO updateUserDTO)
+    {
+        var user = await _userRepository.GetUserByIdAsync(id);
+        if (user == null) throw new KeyNotFoundException("User not found");
+
+        // Updating properties based on the DTO
+        if (updateUserDTO.Username != null) user.Username = updateUserDTO.Username;
+
+        // Call the repository to update the user
+        var updatedUser = await _userRepository.UpdateUserAsync(user);
+
+        return new UpdateUserDTO
+        {
+            Username = updatedUser.Username,
         };
     }
 }

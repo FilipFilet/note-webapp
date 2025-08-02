@@ -32,19 +32,10 @@ public class FolderRepository : IFolderRepository
 
     // Should realistically only retrieve the data, not do a conversion to DTO here.
     // This should be handled in the service layer or controller.
-    public async Task<List<GetFolderDto>> GetFoldersByUserIdAsync(int userId)
+    public async Task<List<Folder>> GetFoldersByUserIdAsync(int userId)
     {
         return await _context.Folders
             .Where(folder => folder.UserId == userId)
-            .Select(folder => new GetFolderDto
-            {
-                Name = folder.Name,
-                Notes = folder.Notes.Select(note => new GetNoteDto
-                {
-                    Title = note.Title,
-                    Content = note.Content
-                }).ToList()
-            })
             .ToListAsync();
     }
 }

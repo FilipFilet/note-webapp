@@ -24,11 +24,15 @@ public class CreateNoteDto
     public string Title { get; set; }
     public string? Content { get; set; }
     public int? FolderId { get; set; }
-    [Required]
-    public int UserId { get; set; }
 }
 
 public class GetNoteDto
+{
+    public string Title { get; set; }
+    public string? Content { get; set; }
+}
+
+public class UpdateNoteDTO
 {
     public string Title { get; set; }
     public string? Content { get; set; }

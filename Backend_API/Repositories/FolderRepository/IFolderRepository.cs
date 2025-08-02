@@ -8,6 +8,6 @@ public interface IFolderRepository
     Task<Folder> UpdateFolderAsync(Folder folder);
     Task<Folder?> GetFolderByIdAsync(int folderId);
 
-    Task<List<GetFolderDto>> GetFoldersByUserIdAsync(int userId);
+    Task<List<Folder>> GetFoldersByUserIdAsync(int userId);
 
 }
