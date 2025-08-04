@@ -4,6 +4,7 @@ namespace Backend_API.Services;
 
 public interface IFolderService
 {
-    Task AddFolderAsync(Folder folder);
-    Task<updateFolderDTO> UpdateFolderAsync(int folderId, updateFolderDTO updateFolderDto);
+    Task<Folder> AddFolderAsync(CreateFolderDto createFolderDto, int userId);
+    Task<updateFolderDTO> UpdateFolderAsync(int folderId, int userId, updateFolderDTO updateFolderDto);
+    public Task<Folder?> GetFolderByIdAsync(int folderId, int userId);
 }

@@ -18,8 +18,6 @@ public class CreateFolderDto
 {
     [Required]
     public string Name { get; set; }
-    [Required]
-    public int UserId { get; set; }
 }
 
 public class updateFolderDTO

@@ -72,7 +72,12 @@ public class UserService : IUserService
     public async Task<UpdateUserDTO?> UpdateUserAsync(int id, UpdateUserDTO updateUserDTO)
     {
         var user = await _userRepository.GetUserByIdAsync(id);
+
+        var potentialOverlapUser = await _userRepository.GetUserByUsernameAsync(updateUserDTO.Username);
+
         if (user == null) throw new KeyNotFoundException("User not found");
+        if (potentialOverlapUser != null) throw new ArgumentException("Username already exists");
+        if (updateUserDTO.Username == user.Username) throw new ArgumentException("Username cant be the same as the current one");
 
         // Updating properties based on the DTO
         if (updateUserDTO.Username != null) user.Username = updateUserDTO.Username;

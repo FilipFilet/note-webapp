@@ -19,15 +19,31 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(CreateUserDto userDto)
     {
-        var jwtString = await _authService.ValidateUserAsync(userDto);
-        return Ok(jwtString);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var jwtString = await _authService.ValidateUserAsync(userDto);
+            return Ok(jwtString);
+        }
+        catch (UnauthorizedAccessException err)
+        {
+            return Unauthorized(err.Message);
+        }
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> AddUser(CreateUserDto userDto)
     {
-        // dont need the returned value, so refactor to just call the service method
-        var createdUser = await _authService.AddUserAsync(userDto);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        await _authService.AddUserAsync(userDto);
         return Ok("User created successfully");
     }
 }

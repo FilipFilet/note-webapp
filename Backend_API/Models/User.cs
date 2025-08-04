@@ -29,6 +29,7 @@ public class GetUserDto
 
 public class UpdateUserDTO
 {
+    [Required]
     public string Username { get; set; }
     // Possibly profile picture, email, etc.
 

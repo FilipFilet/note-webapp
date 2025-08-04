@@ -22,6 +22,7 @@ public class UsersController : ControllerBase
     [HttpGet("me")]
     public async Task<IActionResult> GetUserById()
     {
+
         int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
         try
@@ -39,6 +40,7 @@ public class UsersController : ControllerBase
     [HttpGet("me/content")]
     public async Task<IActionResult> GetMyContent()
     {
+
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         try
@@ -55,6 +57,11 @@ public class UsersController : ControllerBase
     [HttpPut("UpdateUserInfo")]
     public async Task<IActionResult> UpdateUser(UpdateUserDTO updateUserDTO)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
         try
@@ -65,6 +72,14 @@ public class UsersController : ControllerBase
         catch (KeyNotFoundException err)
         {
             return NotFound(err.Message);
+        }
+        catch (ArgumentException err)
+        {
+            return BadRequest(err.Message);
+        }
+        catch (NullReferenceException err)
+        {
+            return BadRequest(err.Message);
         }
     }
 

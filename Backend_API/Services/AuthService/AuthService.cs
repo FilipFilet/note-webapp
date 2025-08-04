@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Backend_API.Models;
 using Backend_API.Repositories;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Backend_API.Services;
@@ -20,6 +21,7 @@ public class AuthService : IAuthService
 
     public async Task<String> ValidateUserAsync(CreateUserDto userDto)
     {
+
         User? user = await _userRepository.GetUserByUsernameAsync(userDto.Username);
         if (user == null || !BCrypt.Net.BCrypt.Verify(userDto.Password, user.Password))
         {
