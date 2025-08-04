@@ -6,11 +6,8 @@ namespace Backend_API.Services;
 
 public interface INoteService
 {
-    Task<Note> GetNoteByIdAsync(int id);
-    Task<List<Note>> GetNotesAsync();
-    Task<List<Note>> GetNotesByUserIdAsync(int userId);
-    Task<List<Note>> GetNotesByFolderIdAsync(int folderId);
-    Task AddNoteAsync(Note note);
+    Task<Note> GetNoteByIdAsync(int id, int userId);
+    Task<Note> AddNoteAsync(CreateNoteDto noteDto, int userId);
     Task<UpdateNoteDTO> UpdateNoteAsync(int userid, int id, UpdateNoteDTO updateNoteDTO);
     Task DeleteNoteAsync(int id);
 }

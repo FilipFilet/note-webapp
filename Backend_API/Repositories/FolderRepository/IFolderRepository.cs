@@ -10,4 +10,6 @@ public interface IFolderRepository
 
     Task<List<Folder>> GetFoldersByUserIdAsync(int userId);
 
+    Task<List<Folder>> GetFoldersWithNotesByUserIdAsync(int userId);
+
 }

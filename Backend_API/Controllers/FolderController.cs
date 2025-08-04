@@ -19,7 +19,7 @@ public class FolderController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("{id}")]
+    [HttpGet("{folderId}")]
     public async Task<IActionResult> GetFolderById(int folderId)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);

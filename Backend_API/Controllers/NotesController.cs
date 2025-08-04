@@ -18,42 +18,71 @@ public class NotesController : ControllerBase
         _noteService = noteService;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetNotes()
-    {
-        List<Note> notes = await _noteService.GetNotesAsync();
-        return Ok(notes);
-    }
-
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> AddNote(CreateNoteDto noteDto)
     {
-        Note note = new Note
+        if (!ModelState.IsValid)
         {
-            Title = noteDto.Title,
-            Content = noteDto.Content,
-            UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value),
-            FolderId = noteDto.FolderId
-        };
+            return BadRequest(ModelState);
+        }
 
-        await _noteService.AddNoteAsync(note);
-        return CreatedAtAction(nameof(GetNotes), new { id = note.Id }, note);
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+        try
+        {
+            var note = await _noteService.AddNoteAsync(noteDto, userId);
+
+            var noteDTO = new CreateNoteDto
+            {
+                Title = note.Title,
+                Content = note.Content,
+                FolderId = note.FolderId,
+            };
+
+            return CreatedAtAction(nameof(GetNoteById), new { id = note.Id }, noteDTO);
+        }
+        catch (KeyNotFoundException err)
+        {
+            return NotFound(err.Message);
+        }
+        catch (UnauthorizedAccessException err)
+        {
+            return Unauthorized(err.Message);
+        }
     }
 
+    [Authorize]
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetNoteById(int id)
+    public async Task<IActionResult> GetNoteById(int noteId)
     {
-        Note note = await _noteService.GetNoteByIdAsync(id);
-        return Ok(note);
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+        try
+        {
+            Note note = await _noteService.GetNoteByIdAsync(noteId, userId);
+            return Ok(note);
+        }
+        catch (KeyNotFoundException err)
+        {
+            return NotFound(err.Message);
+        }
+        catch (UnauthorizedAccessException err)
+        {
+            return Unauthorized(err.Message);
+        }
     }
 
     [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateNote(int id, UpdateNoteDTO updateNoteDTO)
     {
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
         try
         {

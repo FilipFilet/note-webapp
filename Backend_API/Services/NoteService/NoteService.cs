@@ -7,15 +7,35 @@ namespace Backend_API.Services;
 public class NoteService : INoteService
 {
     INoteRepository _noteRepository;
+    IFolderRepository _folderRepository;
 
-    public NoteService(INoteRepository noteRepository)
+    public NoteService(INoteRepository noteRepository, IFolderRepository folderRepository)
     {
         _noteRepository = noteRepository;
+        _folderRepository = folderRepository;
     }
 
-    public async Task AddNoteAsync(Note note)
+    public async Task<Note> AddNoteAsync(CreateNoteDto noteDto, int userId)
     {
+        if (noteDto.FolderId.HasValue && noteDto.FolderId.Value > 0)
+        {
+            var existingFolder = await _folderRepository.GetFolderByIdAsync(noteDto.FolderId.Value);
+
+            if (existingFolder == null) throw new KeyNotFoundException($"Folder with ID {noteDto.FolderId} not found.");
+            if (existingFolder.UserId != userId) throw new UnauthorizedAccessException("You do not have permission to add notes to this folder.");
+
+        }
+
+        Note note = new Note
+        {
+            Title = noteDto.Title,
+            Content = noteDto.Content,
+            UserId = userId,
+            FolderId = noteDto.FolderId <= 0 ? null : noteDto.FolderId
+        };
+
         await _noteRepository.AddNoteAsync(note);
+        return note;
     }
 
     public Task DeleteNoteAsync(int id)
@@ -23,37 +43,32 @@ public class NoteService : INoteService
         throw new NotImplementedException();
     }
 
-    public Task<Note> GetNoteByIdAsync(int id)
+    public async Task<Note> GetNoteByIdAsync(int id, int userId)
     {
-        throw new NotImplementedException();
-    }
+        var note = await _noteRepository.GetNoteByIdAsync(id);
 
-    public async Task<List<Note>> GetNotesAsync()
-    {
-        return await _noteRepository.GetNotesAsync();
-    }
+        if (note == null) throw new KeyNotFoundException($"Note with ID {id} not found.");
+        if (note.UserId != userId) throw new UnauthorizedAccessException("You do not have permission to access this note.");
 
-    public async Task<List<Note>> GetNotesByFolderIdAsync(int folderId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<Note>> GetNotesByUserIdAsync(int userId)
-    {
-        throw new NotImplementedException();
+        return note;
     }
 
     public async Task<UpdateNoteDTO> UpdateNoteAsync(int userid, int id, UpdateNoteDTO updateNoteDTO)
     {
         var note = await _noteRepository.GetNoteByIdAsync(id);
 
-        if (note == null)
+        if (note == null) throw new KeyNotFoundException($"Note with ID {id} not found.");
+        else if (note.UserId != userid) throw new UnauthorizedAccessException("You do not have permission to update this note.");
+
+        // No changes made to the note so no ressources used to update it
+        // Return the original note as a DTO
+        if (note.Title == updateNoteDTO.Title && note.Content == updateNoteDTO.Content)
         {
-            throw new KeyNotFoundException($"Note with ID {id} not found.");
-        }
-        else if (note.UserId != userid)
-        {
-            throw new UnauthorizedAccessException("You do not have permission to update this note.");
+            return new UpdateNoteDTO
+            {
+                Title = note.Title,
+                Content = note.Content
+            };
         }
 
         note.Title = updateNoteDTO.Title;

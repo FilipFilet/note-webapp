@@ -41,7 +41,7 @@ public class UserService : IUserService
         var user = await _userRepository.GetUserByIdAsync(userId);
         if (user == null) throw new KeyNotFoundException("User not found");
 
-        var folders = await _folderRepository.GetFoldersByUserIdAsync(userId);
+        var folders = await _folderRepository.GetFoldersWithNotesByUserIdAsync(userId);
         var independentNotes = await _noteRepository.GetIndependentNotesByUserIdAsync(userId);
 
         // Converting raw data to DTOs
