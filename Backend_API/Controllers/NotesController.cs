@@ -98,4 +98,47 @@ public class NotesController : ControllerBase
             return Unauthorized(err.Message);
         }
     }
+
+    [Authorize]
+    [HttpPut("{id}/folder")]
+    public async Task<IActionResult> UpdateNoteFolder(int id, UpdateNoteFolderDTO updateNoteFolderDTO)
+    {
+
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+        try
+        {
+            var updatedFolder = await _noteService.UpdateNoteFolderAsync(userId, id, updateNoteFolderDTO);
+            return Ok(updatedFolder);
+        }
+        catch (KeyNotFoundException err)
+        {
+            return NotFound(err.Message);
+        }
+        catch (UnauthorizedAccessException err)
+        {
+            return Unauthorized(err.Message);
+        }
+    }
+
+    [Authorize]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteNote(int id)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+        try
+        {
+            await _noteService.DeleteNoteAsync(id, userId);
+            return NoContent();
+        }
+        catch (KeyNotFoundException err)
+        {
+            return NotFound(err.Message);
+        }
+        catch (UnauthorizedAccessException err)
+        {
+            return Unauthorized(err.Message);
+        }
+    }
 }

@@ -12,4 +12,6 @@ public interface IFolderRepository
 
     Task<List<Folder>> GetFoldersWithNotesByUserIdAsync(int userId);
 
+    Task DeleteFolderAsync(Folder folder);
+
 }

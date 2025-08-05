@@ -51,7 +51,7 @@ public class FolderController : ControllerBase
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
         var newFolder = await _folderService.AddFolderAsync(createFolderDto, userId);
-        return CreatedAtAction(nameof(GetFolderById), new { id = newFolder.Id }, createFolderDto);
+        return CreatedAtAction(nameof(GetFolderById), new { folderId = newFolder.Id }, createFolderDto);
     }
 
     [Authorize]
@@ -81,6 +81,27 @@ public class FolderController : ControllerBase
         catch (ArgumentException err)
         {
             return BadRequest(err.Message);
+        }
+    }
+
+    [Authorize]
+    [HttpDelete("{folderId}")]
+    public async Task<IActionResult> DeleteFolder(int folderId)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+        try
+        {
+            await _folderService.DeleteFolderAsync(folderId, userId);
+            return NoContent();
+        }
+        catch (KeyNotFoundException err)
+        {
+            return NotFound(err.Message);
+        }
+        catch (UnauthorizedAccessException err)
+        {
+            return Unauthorized(err.Message);
         }
     }
 }

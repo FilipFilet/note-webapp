@@ -38,9 +38,14 @@ public class NoteService : INoteService
         return note;
     }
 
-    public Task DeleteNoteAsync(int id)
+    public async Task DeleteNoteAsync(int id, int userId)
     {
-        throw new NotImplementedException();
+        var note = await _noteRepository.GetNoteByIdAsync(id);
+
+        if (note == null) throw new KeyNotFoundException($"Note with ID {id} not found.");
+        if (note.UserId != userId) throw new UnauthorizedAccessException("You do not have permission to delete this note.");
+
+        await _noteRepository.DeleteNoteAsync(note);
     }
 
     public async Task<Note> GetNoteByIdAsync(int id, int userId)
@@ -83,4 +88,31 @@ public class NoteService : INoteService
             Content = updatedNote.Content
         };
     }
+
+    public async Task<UpdateNoteFolderDTO> UpdateNoteFolderAsync(int userId, int id, UpdateNoteFolderDTO updateNoteFolderDTO)
+    {
+        var note = await _noteRepository.GetNoteByIdAsync(id);
+
+        if (note == null) throw new KeyNotFoundException($"Note with ID {id} not found.");
+        if (note.UserId != userId) throw new UnauthorizedAccessException("You do not have permission to update this note's folder.");
+
+        if (updateNoteFolderDTO.FolderId.HasValue && updateNoteFolderDTO.FolderId.Value > 0)
+        {
+            var existingFolder = await _folderRepository.GetFolderByIdAsync(updateNoteFolderDTO.FolderId.Value);
+
+            if (existingFolder == null) throw new KeyNotFoundException($"Folder with ID {updateNoteFolderDTO.FolderId} not found.");
+            if (existingFolder.UserId != userId) throw new UnauthorizedAccessException("You do not have permission to move this note to this folder.");
+        }
+
+        note.FolderId = updateNoteFolderDTO.FolderId <= 0 ? null : updateNoteFolderDTO.FolderId;
+
+        var updatedNote = await _noteRepository.UpdateNoteAsync(note);
+
+        return new UpdateNoteFolderDTO
+        {
+            FolderId = updatedNote.FolderId
+        };
+    }
+
+
 }

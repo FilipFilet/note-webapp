@@ -170,3 +170,5 @@ D:\Fritidskodeprojekter\note-webapp\Backend_API\bin\Debug\net8.0\runtimes\win\li
 D:\Fritidskodeprojekter\note-webapp\Backend_API\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 D:\Fritidskodeprojekter\note-webapp\Backend_API\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 D:\Fritidskodeprojekter\note-webapp\Backend_API\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+D:\Fritidskodeprojekter\note-webapp\Backend_API\bin\Debug\net8.0\BCrypt.Net-Next.dll
+D:\Fritidskodeprojekter\note-webapp\Backend_API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

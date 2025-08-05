@@ -44,4 +44,15 @@ public class FolderRepository : IFolderRepository
             .Where(folder => folder.UserId == userId)
             .ToListAsync();
     }
+
+    public async Task DeleteFolderAsync(Folder folder)
+    {
+        var folderToDelete = await _context.Folders
+                                        .Include(f => f.Notes)
+                                        .FirstOrDefaultAsync(f => f.Id == folder.Id);
+
+        _context.Folders.Remove(folderToDelete);
+
+        await _context.SaveChangesAsync();
+    }
 }

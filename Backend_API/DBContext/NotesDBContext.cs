@@ -13,4 +13,19 @@ public class NotesDBContext : DbContext, INotesDBContext
     public DbSet<User> Users { get; set; }
     public DbSet<Folder> Folders { get; set; }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Folder>()
+            .HasMany(f => f.Notes)
+            .WithOne(n => n.Folder)
+            .HasForeignKey(n => n.FolderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Folders)
+            .WithOne(f => f.User)
+            .HasForeignKey(f => f.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+    }
 }

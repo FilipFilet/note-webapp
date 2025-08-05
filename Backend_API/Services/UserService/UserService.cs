@@ -22,6 +22,15 @@ public class UserService : IUserService
         _noteRepository = noteRepository;
     }
 
+    public async Task DeleteUserAsync(int id)
+    {
+        var user = await _userRepository.GetUserByIdAsync(id);
+        if (user == null) throw new KeyNotFoundException("User not found");
+
+
+        await _userRepository.DeleteUserAsync(user);
+    }
+
     public async Task<GetUserDto?> GetUserByIdAsync(int id)
     {
         var user = await _userRepository.GetUserByIdAsync(id);
@@ -90,4 +99,5 @@ public class UserService : IUserService
             Username = updatedUser.Username,
         };
     }
+
 }

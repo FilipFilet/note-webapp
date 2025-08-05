@@ -54,4 +54,14 @@ public class FolderService : IFolderService
         };
         return updatedFolderDto;
     }
+
+    public async Task DeleteFolderAsync(int folderId, int userId)
+    {
+        var folder = await _folderRepository.GetFolderByIdAsync(folderId);
+
+        if (folder == null) throw new KeyNotFoundException($"Folder with ID {folderId} not found.");
+        if (folder.UserId != userId) throw new UnauthorizedAccessException("You do not have permission to delete this folder.");
+
+        await _folderRepository.DeleteFolderAsync(folder);
+    }
 }

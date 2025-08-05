@@ -39,3 +39,8 @@ public class UpdateNoteDTO
     public string Title { get; set; }
     public string? Content { get; set; }
 }
+
+public class UpdateNoteFolderDTO
+{
+    public int? FolderId { get; set; }
+}

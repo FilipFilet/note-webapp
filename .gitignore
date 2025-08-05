@@ -1,2 +1,5 @@
 # Ignore all .env files
 **/*.env
+
+# File for test cases, havent made automatic tests yet
+AcceptanceTests.txt

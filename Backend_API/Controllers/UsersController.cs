@@ -54,6 +54,7 @@ public class UsersController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPut("UpdateUserInfo")]
     public async Task<IActionResult> UpdateUser(UpdateUserDTO updateUserDTO)
     {
@@ -80,6 +81,27 @@ public class UsersController : ControllerBase
         catch (NullReferenceException err)
         {
             return BadRequest(err.Message);
+        }
+    }
+
+    [Authorize]
+    [HttpDelete("DeleteUser")]
+    public async Task<IActionResult> DeleteUser()
+    {
+        int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+        try
+        {
+            await _userService.DeleteUserAsync(userId);
+            return NoContent();
+        }
+        catch (KeyNotFoundException err)
+        {
+            return NotFound(err.Message);
+        }
+        catch (UnauthorizedAccessException err)
+        {
+            return Unauthorized(err.Message);
         }
     }
 
