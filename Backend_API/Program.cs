@@ -77,6 +77,17 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// Configure CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(cfg =>
+    {
+        cfg.AllowAnyOrigin() // Set to any origin for development. Will be restricted in production.
+           .AllowAnyMethod()
+           .AllowAnyHeader();
+    });
+});
+
 
 
 
@@ -88,6 +99,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(); // Apply CORS policy
 
 app.UseHttpsRedirection();
 
