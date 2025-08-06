@@ -17,11 +17,15 @@ public class NoteService : INoteService
 
     public async Task<Note> AddNoteAsync(CreateNoteDto noteDto, int userId)
     {
+        // If the folderId in the dto has a value and is above 0
         if (noteDto.FolderId.HasValue && noteDto.FolderId.Value > 0)
         {
             var existingFolder = await _folderRepository.GetFolderByIdAsync(noteDto.FolderId.Value);
 
+            // If no folder could be found with that id
             if (existingFolder == null) throw new KeyNotFoundException($"Folder with ID {noteDto.FolderId} not found.");
+
+            // if UserId of the folder is different than the one in the JWT
             if (existingFolder.UserId != userId) throw new UnauthorizedAccessException("You do not have permission to add notes to this folder.");
 
         }
@@ -31,6 +35,8 @@ public class NoteService : INoteService
             Title = noteDto.Title,
             Content = noteDto.Content,
             UserId = userId,
+
+            // If incoming folderid is <= 0, set to null, else the incoming id
             FolderId = noteDto.FolderId <= 0 ? null : noteDto.FolderId
         };
 
@@ -60,6 +66,7 @@ public class NoteService : INoteService
 
     public async Task<UpdateNoteDTO> UpdateNoteAsync(int userid, int id, UpdateNoteDTO updateNoteDTO)
     {
+        // Get note to be updated
         var note = await _noteRepository.GetNoteByIdAsync(id);
 
         if (note == null) throw new KeyNotFoundException($"Note with ID {id} not found.");
@@ -76,6 +83,7 @@ public class NoteService : INoteService
             };
         }
 
+        // Set new values
         note.Title = updateNoteDTO.Title;
         note.Content = updateNoteDTO.Content;
 
@@ -95,14 +103,6 @@ public class NoteService : INoteService
 
         if (note == null) throw new KeyNotFoundException($"Note with ID {id} not found.");
         if (note.UserId != userId) throw new UnauthorizedAccessException("You do not have permission to update this note's folder.");
-
-        if (updateNoteFolderDTO.FolderId.HasValue && updateNoteFolderDTO.FolderId.Value > 0)
-        {
-            var existingFolder = await _folderRepository.GetFolderByIdAsync(updateNoteFolderDTO.FolderId.Value);
-
-            if (existingFolder == null) throw new KeyNotFoundException($"Folder with ID {updateNoteFolderDTO.FolderId} not found.");
-            if (existingFolder.UserId != userId) throw new UnauthorizedAccessException("You do not have permission to move this note to this folder.");
-        }
 
         note.FolderId = updateNoteFolderDTO.FolderId <= 0 ? null : updateNoteFolderDTO.FolderId;
 

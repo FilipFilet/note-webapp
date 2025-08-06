@@ -19,6 +19,8 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(CreateUserDto userDto)
     {
+        // Validates the annotations set in the CreateUserDto model
+        // If the model is not valid, return error 400
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
@@ -38,6 +40,7 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> AddUser(CreateUserDto userDto)
     {
+        // Validates the annotations set in the CreateUserDto model
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);

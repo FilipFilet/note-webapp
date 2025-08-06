@@ -22,7 +22,7 @@ public class FolderRepository : IFolderRepository
     {
         _context.Folders.Update(folder);
         await _context.SaveChangesAsync();
-        return folder;
+        return folder; // Returns the folder we also passed in, which has updated alues from the service.
     }
 
     public async Task<Folder?> GetFolderByIdAsync(int folderId)
@@ -47,6 +47,8 @@ public class FolderRepository : IFolderRepository
 
     public async Task DeleteFolderAsync(Folder folder)
     {
+        // Ensure that the folder and its notes are loaded before deletion so EF Core can handle the cascade delete properly
+        // in terms of nullable ints.
         var folderToDelete = await _context.Folders
                                         .Include(f => f.Notes)
                                         .FirstOrDefaultAsync(f => f.Id == folder.Id);

@@ -50,10 +50,12 @@ public class UserService : IUserService
         var user = await _userRepository.GetUserByIdAsync(userId);
         if (user == null) throw new KeyNotFoundException("User not found");
 
+        // Get folders associated with the user
         var folders = await _folderRepository.GetFoldersWithNotesByUserIdAsync(userId);
+        // Get independent notes associated with the user
         var independentNotes = await _noteRepository.GetIndependentNotesByUserIdAsync(userId);
 
-        // Converting raw data to DTOs
+        // Converting retrieved data to DTOs
         var foldersDTO = folders.Select(folder => new GetFolderDto
         {
             Name = folder.Name,
@@ -70,7 +72,7 @@ public class UserService : IUserService
             Content = note.Content,
         }).ToList();
 
-
+        // Returning a new DTO representing the user specific data
         return new UserContentDTO
         {
             Folders = foldersDTO,
@@ -82,6 +84,7 @@ public class UserService : IUserService
     {
         var user = await _userRepository.GetUserByIdAsync(id);
 
+        // Retrives a potential user with the desired username.
         var potentialOverlapUser = await _userRepository.GetUserByUsernameAsync(updateUserDTO.Username);
 
         if (user == null) throw new KeyNotFoundException("User not found");

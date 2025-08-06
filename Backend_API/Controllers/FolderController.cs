@@ -22,6 +22,7 @@ public class FolderController : ControllerBase
     [HttpGet("{folderId}")]
     public async Task<IActionResult> GetFolderById(int folderId)
     {
+        // Gets the user id of the logged in user from the created JWT token
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
         try
@@ -43,6 +44,7 @@ public class FolderController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddFolder(CreateFolderDto createFolderDto)
     {
+        // Validates annotation of model
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);

@@ -22,11 +22,13 @@ public class NotesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddNote(CreateNoteDto noteDto)
     {
+        // Validates annotations of model
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
+        // retrives userid from jwt claims
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
         try

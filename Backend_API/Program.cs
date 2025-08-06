@@ -15,8 +15,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register the database context with dependency injection
 builder.Services.AddDbContext<INotesDBContext, NotesDBContext>(options => options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]));
 
+// Register repositories and services as scoped for each HTTP request
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -28,6 +31,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>
 {
+    // Sets the default authentication scheme to JWT Bearer
     options.DefaultAuthenticateScheme =
     options.DefaultChallengeScheme =
     options.DefaultForbidScheme =
@@ -38,12 +42,16 @@ builder.Services.AddAuthentication(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
+        ValidateIssuer = true, // Compares the issuer in the token with the configured issuer
+        ValidateAudience = true, // Compares the audience in the token with the configured audience
+        ValidateLifetime = true, // Checks if the token is expired
+        ValidateIssuerSigningKey = true, // Ensures the signature is valid by recomputing it with the signing key
+
+        // What the API will validate against
         ValidIssuer = builder.Configuration["JWT:Issuer"],
         ValidAudience = builder.Configuration["JWT:Audience"],
+
+        // Signing key to validate
         IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
     };
 });
@@ -53,14 +61,16 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        In = ParameterLocation.Header,
+        In = ParameterLocation.Header, // Specifies that the token should be passed in the header of the request
         Description = "Please enter a valid token",
-        Name = "Authorization",
+        Name = "Authorization", // Name of the header
         Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "bearer"
+        BearerFormat = "JWT", // Bearer type should be JWT
+        Scheme = "bearer" // Scheme should be bearer token
     });
 
+    // Adds the security requirement to the swagger documentation
+    // This means that swagger documents that all endpoints require authentication
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {

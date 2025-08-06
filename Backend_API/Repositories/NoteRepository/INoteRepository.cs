@@ -11,5 +11,7 @@ public interface INoteRepository
     Task AddNoteAsync(Note note);
     Task<Note> UpdateNoteAsync(Note note);
     Task DeleteNoteAsync(Note note);
+
+    // Get notes that doesnt have a folder assigned to them
     Task<List<Note>> GetIndependentNotesByUserIdAsync(int userId);
 }

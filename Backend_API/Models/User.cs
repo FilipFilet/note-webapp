@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Backend_API.Models;
 
+// Representation of user entity in the database
 public class User
 {
     public int Id { get; set; }
@@ -14,6 +15,7 @@ public class User
     public List<Note> Notes { get; set; } = new List<Note>();
 }
 
+// DTO for creating a user
 public class CreateUserDto
 {
     [Required]
@@ -22,11 +24,13 @@ public class CreateUserDto
     public string Password { get; set; }
 }
 
+// DTO for retrieving user information
 public class GetUserDto
 {
     public string Username { get; set; }
 }
 
+// DTO for updating user information
 public class UpdateUserDTO
 {
     [Required]

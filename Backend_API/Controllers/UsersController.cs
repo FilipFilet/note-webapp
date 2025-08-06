@@ -22,7 +22,7 @@ public class UsersController : ControllerBase
     [HttpGet("me")]
     public async Task<IActionResult> GetUserById()
     {
-
+        // Retrieves the userid from jwt claims
         int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
         try
@@ -58,11 +58,14 @@ public class UsersController : ControllerBase
     [HttpPut("UpdateUserInfo")]
     public async Task<IActionResult> UpdateUser(UpdateUserDTO updateUserDTO)
     {
+        // Validates annotations of model
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
+        // Instead of sending the id through tyhe url, it is retrieved from the JWT claims
+        // This way third-party users cannot change the id in the URL, and change user data
         int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
         try

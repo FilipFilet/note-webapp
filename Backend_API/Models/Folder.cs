@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Backend_API.Models;
 
+// Representation of folder entity in the database
 public class Folder
 {
     public int Id { get; set; }
@@ -14,18 +15,21 @@ public class Folder
     public List<Note> Notes { get; set; } = new List<Note>();
 }
 
+// DTO for creating a folder
 public class CreateFolderDto
 {
     [Required]
     public string Name { get; set; }
 }
 
+// DTO for updating a folder
 public class updateFolderDTO
 {
     [Required]
     public string Name { get; set; }
 }
 
+// DTO for retrieving folder information
 public class GetFolderDto
 {
     public string Name { get; set; }
