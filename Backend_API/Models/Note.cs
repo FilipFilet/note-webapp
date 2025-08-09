@@ -32,6 +32,7 @@ public class CreateNoteDto
 // DTO for retrieving note information
 public class GetNoteDto
 {
+    public int Id { get; set; }
     public string Title { get; set; }
     public string? Content { get; set; }
 }

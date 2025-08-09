@@ -56,13 +56,13 @@ public class NotesController : ControllerBase
 
     [Authorize]
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetNoteById(int noteId)
+    public async Task<IActionResult> GetNoteById(int id)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
         try
         {
-            Note note = await _noteService.GetNoteByIdAsync(noteId, userId);
+            Note note = await _noteService.GetNoteByIdAsync(id, userId);
             return Ok(note);
         }
         catch (KeyNotFoundException err)

@@ -32,6 +32,7 @@ public class updateFolderDTO
 // DTO for retrieving folder information
 public class GetFolderDto
 {
+    public int Id { get; set; }
     public string Name { get; set; }
     public List<GetNoteDto> Notes { get; set; } = new List<GetNoteDto>();
 }

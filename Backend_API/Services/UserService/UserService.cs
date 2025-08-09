@@ -61,6 +61,7 @@ public class UserService : IUserService
             Name = folder.Name,
             Notes = folder.Notes.Select(note => new GetNoteDto
             {
+                Id = note.Id,
                 Title = note.Title,
                 Content = note.Content
             }).ToList()
@@ -68,6 +69,7 @@ public class UserService : IUserService
 
         var IndependentNotesDTO = independentNotes.Select(note => new GetNoteDto
         {
+            Id = note.Id,
             Title = note.Title,
             Content = note.Content,
         }).ToList();

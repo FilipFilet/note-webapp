@@ -1,19 +1,17 @@
 import './App.css';
-import Header from './Modules/Header.jsx';
-import Editor from './Modules/Editor.jsx';
-import Sidebar from './Modules/Sidebar.jsx';
+import ContentPage from './Pages/ContentPage';
+import LoginPage from './Pages/LoginPage.jsx';
+import { Route, Routes } from 'react-router';
 
 function App() {
 
   return (
-    <>
-      <div className="grid grid-cols-[1fr_3fr] grid-rows-[auto_1fr] h-screen">
-        <Header />
-        <Sidebar />
-        <Editor />
-      </div>
-
-    </>
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/Content" element={<ContentPage />} />
+      {/* <Route path="*" element={<UnknownPage/>} /> */}
+    </Routes>
+    
   )
 }
 
