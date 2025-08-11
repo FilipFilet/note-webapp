@@ -25,7 +25,6 @@ public class CreateNoteDto
     [Required]
     public string Title { get; set; }
     public string? Content { get; set; }
-    [Required]
     public int? FolderId { get; set; }
 }
 
@@ -35,6 +34,7 @@ public class GetNoteDto
     public int Id { get; set; }
     public string Title { get; set; }
     public string? Content { get; set; }
+    public int? FolderId { get; set; }
 }
 
 // DTO for updating a note

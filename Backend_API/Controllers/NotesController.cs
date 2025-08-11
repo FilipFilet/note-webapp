@@ -35,8 +35,9 @@ public class NotesController : ControllerBase
         {
             var note = await _noteService.AddNoteAsync(noteDto, userId);
 
-            var noteDTO = new CreateNoteDto
+            var noteDTO = new GetNoteDto
             {
+                Id = note.Id,
                 Title = note.Title,
                 Content = note.Content,
                 FolderId = note.FolderId,

@@ -1,13 +1,29 @@
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import SideBarBtns from './SidebarBtns';
 
-export default function Sidebar({ setSelectedNote }) {
+export default function Sidebar({ selectedNote, setSelectedNote }) {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const [data, setData] = useState({ folders: [], notes: [] });
 
     const token = localStorage.getItem('token')
     const decodedToken = token ? jwtDecode(token) : null;
+
+    // Functions
+    function appendNote(note) {
+        setData(prevData => ({
+            ...prevData,
+            notes: [...prevData.notes, note]
+        }));
+    }
+
+    function updateNote(note) {
+        setData(prevData => {
+            const updatedNotes = prevData.notes.map(n => n.id === note.id ? note : n);
+            return { ...prevData, notes: updatedNotes };
+        });
+    }
 
     useEffect(() => {
         async function fetchUserNotesFolders() {
@@ -32,6 +48,8 @@ export default function Sidebar({ setSelectedNote }) {
 
     return (
         <aside className="bg-red-600 col-start-1 row-start-2 box-border">
+            <SideBarBtns appendNote={appendNote} />
+
             <ul className='pl-5'>
                 {
                     data ? (

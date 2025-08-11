@@ -10,8 +10,8 @@ export default function ContentPage() {
         <>
             <div className="grid grid-cols-[1fr_4fr] grid-rows-[auto_1fr] h-screen">
                 <Header />
-                <Sidebar setSelectedNote={setSelectedNote} />
-                <Editor selectedNote={selectedNote} />
+                <Sidebar selectedNote={selectedNote} setSelectedNote={setSelectedNote} />
+                <Editor selectedNote={selectedNote} setSelectedNote={setSelectedNote} />
             </div>
 
         </>
