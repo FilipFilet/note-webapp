@@ -5,13 +5,14 @@ import { useState } from 'react';
 
 export default function ContentPage() {
     const [selectedNote, setSelectedNote] = useState({});
+    const [updatedNoteData, setUpdatedNoteData] = useState({});
 
     return (
         <>
             <div className="grid grid-cols-[1fr_4fr] grid-rows-[auto_1fr] h-screen">
                 <Header />
-                <Sidebar selectedNote={selectedNote} setSelectedNote={setSelectedNote} />
-                <Editor selectedNote={selectedNote} setSelectedNote={setSelectedNote} />
+                <Sidebar updatedNoteData={updatedNoteData} setSelectedNote={setSelectedNote} />
+                <Editor selectedNote={selectedNote} setUpdatedNoteData={setUpdatedNoteData} />
             </div>
 
         </>

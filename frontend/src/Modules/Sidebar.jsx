@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import SideBarBtns from './SidebarBtns';
 
-export default function Sidebar({ selectedNote, setSelectedNote }) {
+export default function Sidebar({ updatedNoteData, setSelectedNote }) {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const [data, setData] = useState({ folders: [], notes: [] });
@@ -18,7 +18,14 @@ export default function Sidebar({ selectedNote, setSelectedNote }) {
         }));
     }
 
-    function updateNote(note) {
+    function appendFolder(folder) {
+        setData(prevData => ({
+            ...prevData,
+            folders: [...prevData.folders, folder]
+        }));
+    }
+
+    function handleUpdateNote(note) {
         setData(prevData => {
             const updatedNotes = prevData.notes.map(n => n.id === note.id ? note : n);
             return { ...prevData, notes: updatedNotes };
@@ -44,11 +51,15 @@ export default function Sidebar({ selectedNote, setSelectedNote }) {
         fetchUserNotesFolders();
 
 
-    }, []); // Should refetch when the data changes
+    }, []);
+
+    useEffect(() => {
+        handleUpdateNote(updatedNoteData);
+    }, [updatedNoteData]);
 
     return (
         <aside className="bg-red-600 col-start-1 row-start-2 box-border">
-            <SideBarBtns appendNote={appendNote} />
+            <SideBarBtns appendNote={appendNote} appendFolder={appendFolder} />
 
             <ul className='pl-5'>
                 {

@@ -1,24 +1,25 @@
 import { useEffect, useState, useRef } from 'react';
-import { jwtDecode } from 'jwt-decode';
 
-export default function Editor({ selectedNote, setSelectedNote }) {
+export default function Editor({ selectedNote, setUpdatedNoteData }) {
     const apiUrl = import.meta.env.VITE_API_URL;
 
+    // The current selected note
     const [note, setNote] = useState(selectedNote || {});
+
+    // The note that has been updated
     const prevSelectedNoteRef = useRef(note);
 
     const token = localStorage.getItem('token');
-    const decodedToken = token ? jwtDecode(token) : null;
 
     // Updates when clicking another note
     async function updateNote() {
         console.log("Selected note:", selectedNote);
 
         // If there is no note to update (initial load and first click)
-        // On the first click, no need to fetch, since the information about it is alredy fetched in "Sidebar"
+        // On the first click, no need to fetch, since the information about it is already fetched in "Sidebar"
         if (!prevSelectedNoteRef.current || !prevSelectedNoteRef.current.id) {
-            setNote(selectedNote || {}); // Update the note state with the selected note
-            prevSelectedNoteRef.current = note || {}; // Update the ref with the current note
+            setNote(selectedNote || {}); // Update the note state with the selected (clicked) note
+            prevSelectedNoteRef.current = note || {}; // Update the ref with the current note. the "note" variable is updated on each render
             return; // No note selected or no ID available
         }
 
@@ -46,6 +47,7 @@ export default function Editor({ selectedNote, setSelectedNote }) {
         );
 
         if (responsePut.ok) {
+            setUpdatedNoteData(prevSelectedNoteRef.current);
             console.log("Note updated successfully");
         }
 

@@ -53,7 +53,15 @@ public class FolderController : ControllerBase
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
         var newFolder = await _folderService.AddFolderAsync(createFolderDto, userId);
-        return CreatedAtAction(nameof(GetFolderById), new { folderId = newFolder.Id }, createFolderDto);
+
+        var folderDTO = new GetFolderDto
+        {
+            Id = newFolder.Id,
+            Name = newFolder.Name,
+            Notes = new List<GetNoteDto>() // When creating the folder, it has no notes, therefore empty list
+        };
+
+        return CreatedAtAction(nameof(GetFolderById), new { folderId = newFolder.Id }, folderDTO);
     }
 
     [Authorize]
