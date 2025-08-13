@@ -66,20 +66,27 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
                     data ? (
                         <>
                             {data.folders.map(folder => (
-                                <li key={folder.id}>{folder.name}
+                                <>
+                                    <li key={folder.id} className="group" >
+                                        <div className='group-hover:bg-amber-500 flex justify-between pr-2'>{folder.name}
+                                            <div className='flex gap-2 **:cursor-pointer'>
+                                                <button className='hidden group-hover:inline'>Edit</button>
+                                                <button className='hidden group-hover:inline'>+</button>
+                                            </div>
+                                        </div>
+                                    </li>
                                     <ul className='pl-5'>
                                         {
                                             folder.notes.map(note => (
-                                                <li onClick={() => setSelectedNote(note)} key={note.id}>{note.title}</li>
+                                                <li className="hover:bg-amber-500 cursor-pointer" onClick={() => setSelectedNote(note)} key={note.id}>{note.title}</li>
                                             ))}
                                     </ul>
-                                </li>
 
-
+                                </>
                             ))}
                             {
                                 data.notes.map(note => (
-                                    <li onClick={() => setSelectedNote(note)} key={note.id}>{note.title}</li>
+                                    <li onClick={() => setSelectedNote(note)} key={note.id} className="hover:bg-amber-500 cursor-pointer">{note.title}</li>
                                 ))
                             }
                         </>
