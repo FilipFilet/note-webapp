@@ -58,12 +58,14 @@ public class UserService : IUserService
         // Converting retrieved data to DTOs
         var foldersDTO = folders.Select(folder => new GetFolderDto
         {
+            Id = folder.Id,
             Name = folder.Name,
             Notes = folder.Notes.Select(note => new GetNoteDto
             {
                 Id = note.Id,
                 Title = note.Title,
-                Content = note.Content
+                Content = note.Content,
+                FolderId = note.FolderId
             }).ToList()
         }).ToList();
 

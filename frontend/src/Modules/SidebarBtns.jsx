@@ -15,7 +15,7 @@ export default function SideBarBtns({ appendNote, appendFolder }) {
 
             {
                 showCreateNoteModal && createPortal(
-                    <CreateNoteModal onClose={() => setShowCreateNoteModal(false)} appendNote={appendNote} />, document.body
+                    <CreateNoteModal onClose={() => setShowCreateNoteModal(false)} appendNote={appendNote} folderId={null} />, document.body
                 )
             }
 

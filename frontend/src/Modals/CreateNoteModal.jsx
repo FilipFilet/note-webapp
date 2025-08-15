@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
-export default function CreateNoteModal({ onClose, appendNote }) {
+export default function CreateNoteModal({ onClose, appendNote, folderId }) {
     const [noteTitle, setNoteTitle] = useState('');
 
+    console.log(`folderId: ${folderId}`);
 
     const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -17,7 +18,7 @@ export default function CreateNoteModal({ onClose, appendNote }) {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify({ title: noteTitle, content: '', folderId: null })
+            body: JSON.stringify({ title: noteTitle, content: '', folderId: folderId })
         });
 
         if (!response.ok) {
