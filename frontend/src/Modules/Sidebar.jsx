@@ -104,7 +104,7 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
     }, [updatedNoteData]);
 
     return (
-        <aside className="bg-red-600 col-start-1 row-start-2 box-border">
+        <aside className="bg-[#161616] col-start-1 row-start-2 box-border text-white">
             <SideBarBtns appendNote={appendNote} appendFolder={appendFolder} />
 
             <ul className='pl-5'>
@@ -113,8 +113,8 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
                         <>
                             {data.folders.map(folder => (
                                 <React.Fragment key={folder.id}>
-                                    <li className="group" >
-                                        <div className='group-hover:bg-amber-500 flex justify-between pr-2'>{folder.name}
+                                    <li >
+                                        <div className='hover:bg-[#252525] flex justify-between pr-2 group'>{folder.name}
                                             <div className='flex gap-2 **:cursor-pointer'>
                                                 <button className='hidden group-hover:inline' onClick={() => { setShowEditModal(true); setSelectedFolder(folder); }}>Edit</button>
 
@@ -125,7 +125,7 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
                                     <ul className='pl-5'>
                                         {
                                             folder.notes.map(note => (
-                                                <li className="hover:bg-amber-500 cursor-pointer" onClick={() => setSelectedNote(note)} key={note.id}>{note.title}</li>
+                                                <li className="hover:bg-[#252525] cursor-pointer" onClick={() => setSelectedNote(note)} key={note.id}>{note.title}</li>
                                             ))}
                                     </ul>
 
@@ -133,7 +133,7 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
                             ))}
                             {
                                 data.notes.map(note => (
-                                    <li onClick={() => setSelectedNote(note)} key={note.id} className="hover:bg-amber-500 cursor-pointer">{note.title}</li>
+                                    <li onClick={() => setSelectedNote(note)} key={note.id} className="hover:bg-[#252525] cursor-pointer">{note.title}</li>
                                 ))
                             }
                         </>

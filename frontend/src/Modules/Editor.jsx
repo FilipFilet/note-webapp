@@ -72,7 +72,7 @@ export default function Editor({ selectedNote, setUpdatedNoteData }) {
     }
 
     return (
-        <div className="bg-green-600 col-start-2 row-start-2">
+        <div className="bg-[#0f0f0f] col-start-2 row-start-2 text-white">
             {Object.keys(note).length > 0 ? ( // Check if the note has more than 0 keys
                 <>
                     <input type="text" name="title" id="" value={note.title} onChange={handleNoteChange} />

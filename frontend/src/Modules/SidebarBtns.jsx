@@ -9,9 +9,9 @@ export default function SideBarBtns({ appendNote, appendFolder }) {
 
 
     return (
-        <div>
-            <button className="cursor-pointer bg-gray-900 text-white py-1 px-2 m-1" onClick={() => setShowCreateNoteModal(true)}>Create Note</button>
-            <button className="cursor-pointer bg-gray-900 text-white py-1 px-2 m-1" onClick={() => setShowCreateFolderModal(true)}>Create Folder</button>
+        <div className="flex justify-end text-black **:bg-white **:rounded-full **:px-3 **:py-1 **:cursor-pointer gap-4 p-3">
+            <button onClick={() => setShowCreateNoteModal(true)}>Create Note</button>
+            <button onClick={() => setShowCreateFolderModal(true)}>Create Folder</button>
 
             {
                 showCreateNoteModal && createPortal(
