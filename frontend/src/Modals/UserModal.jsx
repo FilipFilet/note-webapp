@@ -1,8 +1,15 @@
 import { useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router";
 
 export default function UserModal({ currentUser, onClose }) {
     const [user, setUser] = useState(currentUser);
+    const Navigate = useNavigate();
+
+    function logout() {
+        localStorage.removeItem("token");
+        Navigate("/"); // Redirect to the home page after logout
+    }
+
 
     return (
         <>
@@ -22,7 +29,11 @@ export default function UserModal({ currentUser, onClose }) {
                         <button>Edit Picture</button>
                     </div>
                 </div>
-                <button onClick={onClose} className="cursor-pointer m-auto block bg-white text-black px-3 py-1 rounded-full">Close</button>
+
+                <div className="flex justify-center gap-3">
+                    <button onClick={onClose} className="cursor-pointer bg-white text-black px-3 py-1 rounded-full">Close</button>
+                    <button onClick={logout} className="cursor-pointer bg-white text-black px-3 py-1 rounded-full">Logout</button>
+                </div>
             </section>
         </>
     );
