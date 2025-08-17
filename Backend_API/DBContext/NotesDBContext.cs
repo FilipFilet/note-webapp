@@ -15,16 +15,11 @@ public class NotesDBContext : DbContext, INotesDBContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Setting up cascading behavior for folders, so they also delete their notes
         modelBuilder.Entity<Folder>()
             .HasMany(f => f.Notes)
             .WithOne(n => n.Folder)
             .HasForeignKey(n => n.FolderId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<User>()
-            .HasMany(u => u.Folders)
-            .WithOne(f => f.User)
-            .HasForeignKey(f => f.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
     }

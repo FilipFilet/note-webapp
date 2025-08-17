@@ -13,7 +13,6 @@ export default function Editor({ selectedNote, setUpdatedNoteData }) {
 
     // Updates when clicking another note
     async function updateNote() {
-        console.log("Selected note:", selectedNote);
 
         // If there is no note to update (initial load and first click)
         // On the first click, no need to fetch, since the information about it is already fetched in "Sidebar"
@@ -48,7 +47,6 @@ export default function Editor({ selectedNote, setUpdatedNoteData }) {
 
         if (responsePut.ok) {
             setUpdatedNoteData(prevSelectedNoteRef.current);
-            console.log("Note updated successfully");
         }
 
         if (responseGet.ok) {
