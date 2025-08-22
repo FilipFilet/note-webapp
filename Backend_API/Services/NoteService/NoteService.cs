@@ -17,6 +17,7 @@ public class NoteService : INoteService
 
     public async Task<Note> AddNoteAsync(CreateNoteDto noteDto, int userId)
     {
+
         // If the folderId in the dto has a value and is above 0
         if (noteDto.FolderId.HasValue && noteDto.FolderId.Value > 0)
         {

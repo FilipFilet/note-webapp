@@ -55,7 +55,7 @@ public class UsersController : ControllerBase
     }
 
     [Authorize]
-    [HttpPut("UpdateUserInfo")]
+    [HttpPut("UpdateUserInfo")] // should possibly be changed to "updateusername"
     public async Task<IActionResult> UpdateUser(UpdateUserDTO updateUserDTO)
     {
         // Validates annotations of model

@@ -1,13 +1,67 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { jwtDecode } from "jwt-decode";
 
 export default function UserModal({ currentUser, onClose }) {
+    const apiUrl = import.meta.env.VITE_API_URL;
+
     const [user, setUser] = useState(currentUser);
-    const Navigate = useNavigate();
+    const [isEditing, setIsEditing] = useState(false);
+    const navigate = useNavigate();
+
+    const token = localStorage.getItem("token");
+
+    const [username, setUsername] = useState(user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]);
+
 
     function logout() {
         localStorage.removeItem("token");
-        Navigate("/"); // Redirect to the home page after logout
+        navigate("/"); // Redirect to the home page after logout
+    }
+
+    async function updateUsername(newName) {
+
+        const response = await fetch(`${apiUrl}/users/updateuserinfo`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ username: newName })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            console.error("Error updating username:", error);
+            return;
+        }
+
+        setUser(prevUser => ({ // prevUser represents the latest user state.
+            ...prevUser,
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": newName
+        }))
+
+        // Close editing mode
+        setIsEditing(false);
+    }
+
+    async function deleteUser() {
+        const response = await fetch(`${apiUrl}/users/deleteuser`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            console.error("Error deleting user:", error);
+            return;
+        }
+
+        // Logout the user after successful deletion
+        logout();
     }
 
 
@@ -20,14 +74,30 @@ export default function UserModal({ currentUser, onClose }) {
                 <div className="flex justify-between">
                     <figure className="flex items-center gap-3">
                         <img src="https://placehold.co/100x100" alt="Profile Image" className="rounded-full" />
-                        <figcaption>{user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]}</figcaption>
+
+                        {
+                            isEditing ?
+                                <input type="text" value={username} onChange={(e) => { setUsername(e.target.value) }} />
+                                :
+                                <figcaption>{username}</figcaption>
+                        }
+
                     </figure>
 
-                    <div className="flex flex-col gap-3 **:cursor-pointer **:bg-white **:text-black **:px-3 **:py-1 **:rounded-full">
-                        <button>Edit Username</button>
-                        <br />
-                        <button>Edit Picture</button>
-                    </div>
+                    {
+                        isEditing ?
+                            <div className="flex flex-col gap-2 **:cursor-pointer **:bg-white **:text-black **:px-3 **:py-1 **:rounded-full">
+                                <button onClick={() => updateUsername(username)}>Confirm</button>
+                                <br />
+                                <button onClick={() => setIsEditing(false)}>Cancel</button>
+                            </div>
+                            :
+                            <div className="flex flex-col gap-2 **:cursor-pointer **:bg-white **:text-black **:px-3 **:py-1 **:rounded-full">
+                                <button onClick={() => setIsEditing(true)}>Edit Username</button>
+                                <br />
+                                <button onClick={deleteUser}>Delete Account</button>
+                            </div>
+                    }
                 </div>
 
                 <div className="flex justify-center gap-3">

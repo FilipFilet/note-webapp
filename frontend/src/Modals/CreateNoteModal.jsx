@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+// just for testing
+import { jwtDecode } from 'jwt-decode';
+
 export default function CreateNoteModal({ onClose, appendNote, folderId }) {
     const [noteTitle, setNoteTitle] = useState('');
 
@@ -9,7 +12,11 @@ export default function CreateNoteModal({ onClose, appendNote, folderId }) {
 
     const token = localStorage.getItem('token');
 
+    const tokenToLog = jwtDecode(token);
+
     async function createNote(e) {
+        console.log(tokenToLog);
+
         e.preventDefault();
 
         const response = await fetch(`${apiUrl}/notes`, {

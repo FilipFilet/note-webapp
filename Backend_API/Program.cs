@@ -114,6 +114,7 @@ app.UseCors(); // Apply CORS policy
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

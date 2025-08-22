@@ -1,3 +1,5 @@
+// Identical to the DeleteNoteModal, so might be able to just merge and create a template
+
 export default function DeleteNoteModal({ onClose, handleDeleteNote, noteToDelete }) {
     return (
         <>
