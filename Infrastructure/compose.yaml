@@ -10,6 +10,7 @@ services:
     environment: # Environment variables for the api service
       - ConnectionStrings__DefaultConnection=${CONNECTION_STRING} # Set in a seperate .env file
 
+  # Docker compose sets this database container up by itself
   mssql-db:
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
