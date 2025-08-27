@@ -3,6 +3,7 @@ You need to add a .env files with the CONNECTION_STRING and MSSQL_PASSWORD varia
 
 The CONNECTION_STRING variable has to be in the following format:
 Server=mssql-db,1433;Database=_Chosen Database_;User Id=sa;Password=_Chosen Password_;TrustServerCertificate=True;
+The password has to be the same as the MSSQL_PASSWORD variable, and the database it will create by itself if it doesnt exist
 
 The MSSQL_PASSWORD can be anything really.
 
