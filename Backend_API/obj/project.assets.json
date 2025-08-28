@@ -4924,27 +4924,31 @@
   },
   "packageFolders": {
     "C:\\Users\\TheFa\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Fritidskodeprojekter\\note-webapp\\Backend_API\\Backend_API.csproj",
+      "projectUniqueName": "C:\\Users\\TheFa\\Documents\\Fritids kodeprojekter\\note-webapp\\Backend_API\\Backend_API.csproj",
       "projectName": "Backend_API",
-      "projectPath": "D:\\Fritidskodeprojekter\\note-webapp\\Backend_API\\Backend_API.csproj",
+      "projectPath": "C:\\Users\\TheFa\\Documents\\Fritids kodeprojekter\\note-webapp\\Backend_API\\Backend_API.csproj",
       "packagesPath": "C:\\Users\\TheFa\\.nuget\\packages\\",
-      "outputPath": "D:\\Fritidskodeprojekter\\note-webapp\\Backend_API\\obj\\",
+      "outputPath": "C:\\Users\\TheFa\\Documents\\Fritids kodeprojekter\\note-webapp\\Backend_API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\TheFa\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\TheFa\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
