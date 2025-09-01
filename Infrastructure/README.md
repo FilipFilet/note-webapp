@@ -11,6 +11,13 @@ COMPOSE_PROJECT_NAME should be named note-webapp. This variable is just so we do
 
 Also need to set up a .env file in the frontend folder with the variable VITE_API_URL and the value http://localhost:5000/api
 
-Remember to write nom install under /frontend
 
+
+# User-secret
+Add the user-secret for local development
+
+# Migration
 Apply migrations in EF Core under /Backend_API so the database gets crated with the necessary relationships
+
+# Frontend setup
+Remember to write npn install under /frontend
