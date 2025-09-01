@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-export default function LoginForm()
-{
+export default function LoginForm() {
     const [error, setError] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -11,37 +10,32 @@ export default function LoginForm()
     async function handleSubmit(event) {
         event.preventDefault();
 
-        try
-        {
+        try {
             let response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
                 method: 'POST',
-                body: JSON.stringify({ username, password}),
+                body: JSON.stringify({ username, password }),
                 headers: {
                     'Content-Type': 'application/json'
                 },
             })
 
-            if (!response.ok)
-            {
+            if (!response.ok) {
                 let errorMessage = "Login failed";
 
-                if (response.status === 400)
-                {
+                if (response.status === 400) {
                     const errorData = await response.json();
 
                     const errors = Object.values(errorData.errors).flat();
                     errorMessage = errors.join(", ");
                 }
-                else
-                {
+                else {
                     errorMessage = await response.text();
                 }
 
                 setError(errorMessage || "Login failed");
                 console.error("Login error:", errorMessage);
             }
-            else
-            {
+            else {
                 const token = await response.text();
                 localStorage.setItem('token', token);
                 navigate('/Content');
@@ -56,12 +50,12 @@ export default function LoginForm()
     }
 
     return (
-        <form action="" className="login-form" onSubmit={handleSubmit}>
-            <input type="text" placeholder="Username" className="border-2 border-gray-900" onChange={(e) => setUsername(e.target.value)} />
+        <form action="" className='flex flex-col gap-2' onSubmit={handleSubmit}>
+            <input type="text" placeholder="Username" className="border-none rounded-sm bg-white p-0.5" onChange={(e) => setUsername(e.target.value)} />
             <br />
-            <input type="password" placeholder="Password" className="border-2 border-gray-900" onChange={(e) => setPassword(e.target.value)} />
+            <input type="password" placeholder="Password" className="border-none rounded-sm bg-white p-0.5" onChange={(e) => setPassword(e.target.value)} />
             <br />
-            <input type="submit" value="Login" className="bg-gray-900 text-white py-1 px-2" />
+            <input type="submit" value="Login" className="bg-white py-1 px-2 w-[50%] self-center rounded-sm" />
         </form>
     )
 }

@@ -22,17 +22,19 @@ export default function RegisterForm() {
             const errorMessage = Object.values(errorData.errors).flat().join(", ");
             console.error("Registration failed:", errorMessage);
         }
+
+        alert("Registration successful!");
     }
 
 
     return (
-        <form action="" onSubmit={handleRegister}>
-            <input type="text" name="username" placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
+        <form action="" className="flex flex-col gap-2" onSubmit={handleRegister}>
+            <input type="text" name="username" placeholder="Username" onChange={(e) => setUsername(e.target.value)} className="border-none rounded-sm bg-white p-0.5" />
             <br />
-            <input type="password" name="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+            <input type="password" name="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} className="border-none rounded-sm bg-white p-0.5" />
             <br />
 
-            <input type="submit" value="Register" />
+            <input type="submit" className="bg-white py-1 px-2 w-[50%] self-center rounded-sm" value="Register" />
         </form>
     )
 }
