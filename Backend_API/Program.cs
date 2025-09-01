@@ -52,7 +52,8 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["JWT:Audience"],
 
         // Signing key to validate
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+        ClockSkew = TimeSpan.FromMinutes(1) // A buffer for token expiration. This means if a device clock is behind real time, the token may still be considered valid and count 5 minutes for that
     };
 });
 

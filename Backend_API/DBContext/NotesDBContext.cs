@@ -12,7 +12,6 @@ public class NotesDBContext : DbContext, INotesDBContext
     public DbSet<Note> Notes { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Folder> Folders { get; set; }
-    public DbSet<DummyModel> DummyModels { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

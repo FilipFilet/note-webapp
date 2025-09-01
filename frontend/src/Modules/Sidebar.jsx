@@ -7,6 +7,7 @@ import CreateNoteModal from '../Modals/CreateNoteModal';
 import React from 'react';
 import DeleteNoteModal from '../Modals/DeleteNoteModal';
 import DeleteFolderModal from '../Modals/DeleteFolderModal';
+import DeleteModal from '../Modals/DeleteModal';
 
 export default function Sidebar({ updatedNoteData, setSelectedNote }) {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -16,9 +17,8 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
     const [selectedFolder, setSelectedFolder] = useState({});
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showDeleteNoteModal, setShowDeleteNoteModal] = useState(false);
-    const [noteToDelete, setNoteToDelete] = useState({});
-    const [folderToDelete, setFolderToDelete] = useState({});
     const [showDeleteFolderModal, setShowDeleteFolderModal] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState({});
 
     const token = localStorage.getItem('token')
     const decodedToken = token ? jwtDecode(token) : null;
@@ -197,7 +197,7 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
                                         <div className='hover:bg-[#252525] flex justify-between pr-2 pl-2 group'>
                                             <p>{folder.name}</p>
                                             <div className='flex gap-2 **:cursor-pointer **:opacity-50 **:hover:opacity-100'>
-                                                <button className='hidden group-hover:inline' onClick={() => { setFolderToDelete(folder); setShowDeleteFolderModal(true); }}>Delete</button>
+                                                <button className='hidden group-hover:inline' onClick={() => { setItemToDelete(folder); setShowDeleteFolderModal(true); }}>Delete</button>
                                                 <button className='hidden group-hover:inline' onClick={() => { setShowEditModal(true); setSelectedFolder(folder); }}>Edit</button>
                                                 <button className='hidden group-hover:inline' onClick={() => { setShowCreateModal(true); setSelectedFolder(folder); }}>+</button>
                                             </div>
@@ -209,7 +209,7 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
                                                 <li className="hover:bg-[#252525] cursor-pointer group" onClick={() => setSelectedNote(note)} key={note.id}>
                                                     <div className='flex justify-between pr-2 pl-2 '>
                                                         <p>{note.title}</p>
-                                                        <button className='hidden group-hover:inline  cursor-pointer opacity-50 hover:opacity-100' onClick={(e) => { e.stopPropagation(); setNoteToDelete(note); setShowDeleteNoteModal(true); }}>Delete</button>
+                                                        <button className='hidden group-hover:inline  cursor-pointer opacity-50 hover:opacity-100' onClick={(e) => { e.stopPropagation(); setItemToDelete(note); setShowDeleteNoteModal(true); }}>Delete</button>
                                                     </div>
                                                 </li>
 
@@ -223,7 +223,7 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
                                     <li onClick={() => setSelectedNote(note)} key={note.id} className="hover:bg-[#252525] cursor-pointer">
                                         <div className='flex justify-between pr-2 pl-2 group'>
                                             <p>{note.title}</p>
-                                            <button className='hidden group-hover:inline cursor-pointer opacity-50 hover:opacity-100' onClick={() => { setNoteToDelete(note); setShowDeleteNoteModal(true); }}>Delete</button>
+                                            <button className='hidden group-hover:inline cursor-pointer opacity-50 hover:opacity-100' onClick={() => { setItemToDelete(note); setShowDeleteNoteModal(true); }}>Delete</button>
                                         </div>
 
                                     </li>
@@ -243,13 +243,14 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
                 <CreateNoteModal onClose={() => setShowCreateModal(false)} appendNote={appendNote} folderId={selectedFolder.id} />, document.body
             )}
 
-            {/* Delete functionality is seperated for better separation of concerns */}
+            {/* Delete note */}
             {showDeleteNoteModal && createPortal(
-                <DeleteNoteModal onClose={() => setShowDeleteNoteModal(false)} handleDeleteNote={handleDeleteNote} noteToDelete={noteToDelete} />, document.body
+                <DeleteModal onClose={() => setShowDeleteNoteModal(false)} handleDelete={handleDeleteNote} itemToDelete={itemToDelete} message={`Are you sure you want to delete the note with the title "${itemToDelete.title}"?`} />, document.body
             )}
 
+            {/* Delete folder */}
             {showDeleteFolderModal && createPortal(
-                <DeleteFolderModal onClose={() => setShowDeleteFolderModal(false)} handleDeleteFolder={handleDeleteFolder} folderToDelete={folderToDelete} />, document.body
+                <DeleteModal onClose={() => setShowDeleteFolderModal(false)} handleDelete={handleDeleteFolder} itemToDelete={itemToDelete} message={`Are you sure you want to delete the folder with the title "${itemToDelete.name}"?`} />, document.body
             )}
         </aside>
     )
