@@ -16,7 +16,7 @@ services:
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: ${MSSQL_PASSWORD} # Set in a seperate .env file
-    volumes: # makes a volume names "mssql-data", and stores persitent data in the path that follows.
+    volumes: # makes a volume named "mssql-data", and stores persitent data in the path that follows.
       - mssql-data:/var/opt/mssql
     ports:
       - "1433:1433"
