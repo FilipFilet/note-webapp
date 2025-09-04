@@ -38,6 +38,7 @@ export default function UserModal({ currentUser, onClose }) {
 
         setUser(prevUser => ({ // prevUser represents the latest user state.
             ...prevUser,
+            // change this to username
             "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": newName
         }))
 

@@ -1,19 +1,24 @@
 import { useEffect, useState, useRef } from 'react';
+import TipTap from './TipTapEditor';
 
 export default function Editor({ selectedNote, setUpdatedNoteData }) {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     // The current selected note
     const [note, setNote] = useState(selectedNote || {});
+    const [editorInstance, setEditorInstance] = useState(null);
 
-    // The note that has been updated
+    useEffect(() => {
+        console.log('note in Editor:', note);
+    })
+
+    // The note that has been updated. Represents the previous selected note with a useRef that doesnt get updated on each render
     const prevSelectedNoteRef = useRef(note);
 
     const token = localStorage.getItem('token');
 
     // Updates when clicking another note
     async function updateNote() {
-
         // If there is no note to update (initial load and first click)
         // On the first click, no need to fetch, since the information about it is already fetched in "Sidebar"
         if (!prevSelectedNoteRef.current || !prevSelectedNoteRef.current.id) {
@@ -33,6 +38,11 @@ export default function Editor({ selectedNote, setUpdatedNoteData }) {
             }
         )
 
+        // Before updating the note, save the previous note's content from the editor instance
+        if (editorInstance) {
+            prevSelectedNoteRef.current.content = JSON.stringify(editorInstance.getJSON());
+        }
+
         // Updates the note in the database (when clicking another note)
         const responsePut = await fetch(`${apiUrl}/notes/${prevSelectedNoteRef.current.id}`,
             {
@@ -46,6 +56,7 @@ export default function Editor({ selectedNote, setUpdatedNoteData }) {
         );
 
         if (responsePut.ok) {
+            console.log('Previous note updated successfully', prevSelectedNoteRef.current);
             setUpdatedNoteData(prevSelectedNoteRef.current);
         }
 
@@ -75,7 +86,8 @@ export default function Editor({ selectedNote, setUpdatedNoteData }) {
                 <>
                     <input type="text" name="title" id="" value={note.title} onChange={handleNoteChange} />
                     <br />
-                    <textarea name="content" value={note.content} onChange={handleNoteChange} />
+                    <TipTap contentJSON={note.content} setEditorInstance={setEditorInstance} />
+                    {/* <textarea name="content" value={note.content} onChange={handleNoteChange} /> */}
                 </>
             )
                 : <p>Select a note to view its content</p>}

@@ -10,6 +10,10 @@ export default function Header() {
 
     const [showUserModal, setShowUserModal] = useState(false)
 
+    // fetch user data
+    // store in state
+    // pass state and state function to usermodal
+
     return (
         <>
             <header className="bg-[#161616] col-span-2 row-start-1 flex justify-between items-center p-3 text-white">
