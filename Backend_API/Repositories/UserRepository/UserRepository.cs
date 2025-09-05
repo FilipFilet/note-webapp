@@ -38,6 +38,7 @@ public class UserRepository : IUserRepository
             .ToListAsync();
     }
 
+    // case insensitive username search
     public async Task<User?> GetUserByUsernameAsync(string username)
     {
         return await _context.Users

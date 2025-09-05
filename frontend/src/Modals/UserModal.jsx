@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { jwtDecode } from "jwt-decode";
+import { useRef } from "react";
 
-export default function UserModal({ currentUser, onClose }) {
+export default function UserModal({ currentUser, onClose, setUser }) {
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    const [user, setUser] = useState(currentUser);
     const [isEditing, setIsEditing] = useState(false);
+    const preEditUsername = useRef(currentUser.username);
+
     const navigate = useNavigate();
 
     const token = localStorage.getItem("token");
-
-    const [username, setUsername] = useState(user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]);
 
 
     function logout() {
@@ -31,16 +31,17 @@ export default function UserModal({ currentUser, onClose }) {
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            console.error("Error updating username:", error);
+            const errorData = await response.text();
+            console.error("Error updating username:", errorData);
             return;
         }
 
         setUser(prevUser => ({ // prevUser represents the latest user state.
             ...prevUser,
-            // change this to username
-            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": newName
+            username: newName
         }))
+
+        preEditUsername.current = currentUser.username; // Update the pre-edit username
 
         // Close editing mode
         setIsEditing(false);
@@ -56,8 +57,9 @@ export default function UserModal({ currentUser, onClose }) {
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            console.error("Error deleting user:", error);
+            const errorData = await response.json();
+            const errorMessage = Object.values(errorData.errors).flat().join(", ");
+            console.error("Error deleting user:", errorMessage);
             return;
         }
 
@@ -78,9 +80,9 @@ export default function UserModal({ currentUser, onClose }) {
 
                         {
                             isEditing ?
-                                <input type="text" value={username} onChange={(e) => { setUsername(e.target.value) }} />
+                                <input type="text" value={currentUser.username} onChange={(e) => { setUser({ ...currentUser, username: e.target.value }) }} />
                                 :
-                                <figcaption>{username}</figcaption>
+                                <figcaption>{currentUser.username}</figcaption>
                         }
 
                     </figure>
@@ -88,9 +90,9 @@ export default function UserModal({ currentUser, onClose }) {
                     {
                         isEditing ?
                             <div className="flex flex-col gap-2 **:cursor-pointer **:bg-white **:text-black **:px-3 **:py-1 **:rounded-full">
-                                <button onClick={() => updateUsername(username)}>Confirm</button>
+                                <button onClick={() => updateUsername(currentUser.username)}>Confirm</button>
                                 <br />
-                                <button onClick={() => setIsEditing(false)}>Cancel</button>
+                                <button onClick={() => { setIsEditing(false), setUser({ ...currentUser, username: preEditUsername.current }) }}>Cancel</button>
                             </div>
                             :
                             <div className="flex flex-col gap-2 **:cursor-pointer **:bg-white **:text-black **:px-3 **:py-1 **:rounded-full">

@@ -56,16 +56,18 @@ function TipTap({ contentJSON, setEditorInstance }) {
         content: '',
     })
 
+    if (!editor) return null;
+
     useEffect(() => {
         if (editor) setEditorInstance(editor)
     }, [editor]) // Run this when the editor gets initialized. If this is not set as a dependency, then the editor will not be set, since editor is a falsy value.
 
-    if (!editor) return null;
+
 
     useEffect(() => {
-        if (editor && contentJSON) {
+        if (editor) {
             const currentContent = editor.getJSON();
-            const newContent = JSON.parse(contentJSON);
+            const newContent = contentJSON ? JSON.parse(contentJSON) : contentJSON;
 
             if (JSON.stringify(currentContent) !== JSON.stringify(newContent))
                 editor.commands.setContent(newContent);
@@ -73,38 +75,36 @@ function TipTap({ contentJSON, setEditorInstance }) {
     }, [editor, contentJSON]);
 
     return (
-        <>
-            <div className='control-group'>
-                <div className='button-group flex gap-5 bg-red-500'>
-                    <button className='cursor-pointer' onClick={() => editor.chain().focus().toggleBold().run()}><FontAwesomeIcon icon="fa-solid fa-bold" /></button>
-                    <button className='cursor-pointer' onClick={() => editor.chain().focus().toggleItalic().run()}><FontAwesomeIcon icon="fa-solid fa-italic" /></button>
-                    <button className='cursor-pointer' onClick={() => editor.chain().focus().setHeading({ level: 1 }).run()}>H1</button>
-                    <button className='cursor-pointer' onClick={() => editor.chain().focus().setHeading({ level: 2 }).run()}>H2</button>
-                    <button className='cursor-pointer' onClick={() => editor.chain().focus().setParagraph().run()}>p</button>
+        <div className="flex-1 flex flex-col border-2 rounded-md">
+            <div className='button-group flex gap-5 bg-[#161616] rounded-t-sm p-2'>
+                <button className='cursor-pointer' onClick={() => editor.chain().focus().toggleBold().run()}><FontAwesomeIcon icon="fa-solid fa-bold" /></button>
+                <button className='cursor-pointer' onClick={() => editor.chain().focus().toggleItalic().run()}><FontAwesomeIcon icon="fa-solid fa-italic" /></button>
+                <button className='cursor-pointer' onClick={() => editor.chain().focus().setHeading({ level: 1 }).run()}>H1</button>
+                <button className='cursor-pointer' onClick={() => editor.chain().focus().setHeading({ level: 2 }).run()}>H2</button>
+                <button className='cursor-pointer' onClick={() => editor.chain().focus().setParagraph().run()}>p</button>
 
-                    {/* table button dropdown */}
-                    <div className="relative">
-                        <button className='cursor-pointer' onClick={() => { dropDownOpen ? setDropDownOpen(false) : setDropDownOpen(true) }}><FontAwesomeIcon icon="fa-solid fa-table" /></button>
+                {/* table button dropdown */}
+                <div className="relative">
+                    <button className='cursor-pointer' onClick={() => { dropDownOpen ? setDropDownOpen(false) : setDropDownOpen(true) }}><FontAwesomeIcon icon="fa-solid fa-table" /></button>
 
-                        {/* The dropdown */}
-                        <div className={`${dropDownOpen ? 'block' : 'hidden'} absolute bg-red-500 list-none whitespace-nowrap z-50`}>
-                            <li className='cursor-pointer hover:bg-red-600'><button className='px-1 py-2 cursor-pointer' onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>Insert Table</button></li>
-                            <li className='cursor-pointer hover:bg-red-600'><button className='px-1 py-2 cursor-pointer' onClick={() => editor.chain().focus().addColumnAfter().run()}>Insert Column</button></li>
-                            <li className='cursor-pointer hover:bg-red-600'><button className='px-1 py-2 cursor-pointer' onClick={() => editor.chain().focus().addRowAfter().run()}>Insert Row</button></li>
-                            <li className='cursor-pointer hover:bg-red-600'><button className='px-1 py-2 cursor-pointer' onClick={() => editor.chain().focus().deleteColumn().run()}>Delete Column</button></li>
-                            <li className='cursor-pointer hover:bg-red-600'><button className='px-1 py-2 cursor-pointer' onClick={() => editor.chain().focus().deleteRow().run()}>Delete Row</button></li>
-                            <li className='cursor-pointer hover:bg-red-600'><button className='px-1 py-2 cursor-pointer' onClick={() => editor.chain().focus().deleteTable().run()}>Delete Table</button></li>
-                        </div>
+                    {/* The dropdown */}
+                    <div className={`${dropDownOpen ? 'block' : 'hidden'} absolute bg-red-500 list-none whitespace-nowrap z-50`}>
+                        <li className='cursor-pointer hover:bg-red-600'><button className='px-1 py-2 cursor-pointer' onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>Insert Table</button></li>
+                        <li className='cursor-pointer hover:bg-red-600'><button className='px-1 py-2 cursor-pointer' onClick={() => editor.chain().focus().addColumnAfter().run()}>Insert Column</button></li>
+                        <li className='cursor-pointer hover:bg-red-600'><button className='px-1 py-2 cursor-pointer' onClick={() => editor.chain().focus().addRowAfter().run()}>Insert Row</button></li>
+                        <li className='cursor-pointer hover:bg-red-600'><button className='px-1 py-2 cursor-pointer' onClick={() => editor.chain().focus().deleteColumn().run()}>Delete Column</button></li>
+                        <li className='cursor-pointer hover:bg-red-600'><button className='px-1 py-2 cursor-pointer' onClick={() => editor.chain().focus().deleteRow().run()}>Delete Row</button></li>
+                        <li className='cursor-pointer hover:bg-red-600'><button className='px-1 py-2 cursor-pointer' onClick={() => editor.chain().focus().deleteTable().run()}>Delete Table</button></li>
                     </div>
-
-                    <button className='cursor-pointer' onClick={() => editor.chain().focus().toggleBulletList().run()}><FontAwesomeIcon icon="fa-solid fa-list-ul" /></button>
-                    <button className='cursor-pointer' onClick={() => editor.chain().focus().toggleTaskList().run()}><FontAwesomeIcon icon="fa-solid fa-list-check" /></button>
-
                 </div>
-            </div>
-            <EditorContent className="prose" editor={editor} />
 
-        </>
+                <button className='cursor-pointer' onClick={() => editor.chain().focus().toggleBulletList().run()}><FontAwesomeIcon icon="fa-solid fa-list-ul" /></button>
+                <button className='cursor-pointer' onClick={() => editor.chain().focus().toggleTaskList().run()}><FontAwesomeIcon icon="fa-solid fa-list-check" /></button>
+
+            </div>
+            <EditorContent className='flex-1 p-2' editor={editor} />
+
+        </div>
     )
 }
 

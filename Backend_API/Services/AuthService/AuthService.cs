@@ -24,7 +24,7 @@ public class AuthService : IAuthService
     {
         User? user = await _userRepository.GetUserByUsernameAsync(userDto.Username);
 
-        // If user doesnt exist, or password is incorrect
+        // If user doesnt exist, or password is incorrect. The verify is case sensitive.
         if (user == null || !BCrypt.Net.BCrypt.Verify(userDto.Password, user.Password))
         {
             throw new UnauthorizedAccessException("Invalid username or password.");
@@ -60,6 +60,13 @@ public class AuthService : IAuthService
 
     public async Task<User> AddUserAsync(CreateUserDto userDto)
     {
+        // Check if username is already taken
+        User? existingUser = await _userRepository.GetUserByUsernameAsync(userDto.Username);
+        if (existingUser != null)
+        {
+            throw new ArgumentException("Username is already taken.");
+        }
+
         // Creates a new user object
         User user = new User
         {

@@ -7,7 +7,7 @@ h1 {
 }
 
 .tiptap {
-
+    @apply flex-1 h-full focus:outline-none;
 
     h2 {
         @apply text-3xl font-bold my-4;
@@ -44,4 +44,8 @@ h1 {
         @apply m-0;
     }
 
+}
+
+.tiptap > p:first-child {
+    @apply m-0;
 }

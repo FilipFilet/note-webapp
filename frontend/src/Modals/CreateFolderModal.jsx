@@ -33,11 +33,15 @@ export default function CreateFolderModal({ onClose, appendFolder }) {
     return (
         <>
             <div className='absolute left-0 top-0 w-screen h-screen bg-black opacity-50'></div>
-            <form action="" onSubmit={createFolder} className="absolute left-[50%] top-[50%] transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 p-3 text-white">
+            <form action="" onSubmit={createFolder} className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col gap-4 bg-[#161616] p-5 rounded-lg shadow-lg text-white ">
                 <h1 className="mb-4">Create Folder</h1>
                 <input type="text" placeholder="Folder Name" value={folderName} onChange={(e) => setFolderName(e.target.value)} className='border-1 border-gray-400' />
                 <br />
-                <button type="submit">Create Folder</button>
+                <div className="flex gap-2">
+                    <button type="submit" className='bg-white text-black py-1 flex-1 cursor-pointer'>Create Folder</button>
+                    <button type="button" className='bg-white text-black py-1 flex-1 cursor-pointer' onClick={onClose}>Close</button>
+
+                </div>
             </form>
         </>
     )

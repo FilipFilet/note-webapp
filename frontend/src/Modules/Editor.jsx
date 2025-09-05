@@ -8,10 +8,6 @@ export default function Editor({ selectedNote, setUpdatedNoteData }) {
     const [note, setNote] = useState(selectedNote || {});
     const [editorInstance, setEditorInstance] = useState(null);
 
-    useEffect(() => {
-        console.log('note in Editor:', note);
-    })
-
     // The note that has been updated. Represents the previous selected note with a useRef that doesnt get updated on each render
     const prevSelectedNoteRef = useRef(note);
 
@@ -81,16 +77,19 @@ export default function Editor({ selectedNote, setUpdatedNoteData }) {
     }
 
     return (
-        <div className="bg-[#0f0f0f] col-start-2 row-start-2 text-white">
+        <div className="flex flex-col bg-[#0f0f0f] col-start-2 row-start-2 text-white box-border p-4 h-full">
             {Object.keys(note).length > 0 ? ( // Check if the note has more than 0 keys
                 <>
-                    <input type="text" name="title" id="" value={note.title} onChange={handleNoteChange} />
+                    <input className='font-bold text-5xl mb-2 focus:outline-none w-full' type="text" name="title" id="" value={note.title} onChange={handleNoteChange} />
                     <br />
                     <TipTap contentJSON={note.content} setEditorInstance={setEditorInstance} />
-                    {/* <textarea name="content" value={note.content} onChange={handleNoteChange} /> */}
                 </>
             )
-                : <p>Select a note to view its content</p>}
+                :
+                <div className="flex flex-1 items-center justify-center w-full h-full">
+                    <p>Select a note to view its content</p>
+                </div>
+            }
         </div>
     )
 }

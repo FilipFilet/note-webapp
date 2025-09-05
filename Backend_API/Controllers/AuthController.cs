@@ -46,7 +46,15 @@ public class AuthController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        await _authService.AddUserAsync(userDto);
+        try
+        {
+            await _authService.AddUserAsync(userDto);
+        }
+        catch (ArgumentException err)
+        {
+            return BadRequest(err.Message);
+        }
+
         return Ok("User created successfully");
     }
 }
