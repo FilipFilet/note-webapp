@@ -20,7 +20,7 @@ public class AuthService : IAuthService
         _userRepository = userRepository;
     }
 
-    public async Task<String> ValidateUserAsync(CreateUserDto userDto)
+    public async Task<AuthenticatedResponse> ValidateUserAsync(LoginUserDto userDto)
     {
         User? user = await _userRepository.GetUserByUsernameAsync(userDto.Username);
 
@@ -29,33 +29,24 @@ public class AuthService : IAuthService
         {
             throw new UnauthorizedAccessException("Invalid username or password.");
         }
-
-        // Configure JWT Signature
-        var signingCredentials = new SigningCredentials(
-            //                       Converts the secret key from a string to a byte array, since SymmetricSecurityKey expects a byte array    
-            new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config["Jwt:Key"])),
-            SecurityAlgorithms.HmacSha256Signature
-        );
-
-        // Configure custom claims
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Username)
         };
 
-        // Create JWT token object with claims and signature
-        var jwtObject = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(5),
-            signingCredentials: signingCredentials
-        );
+        var jwtString = GenerateAccessToken(claims);
 
-        // Serialize the JWT token to a string represntted as "header.payload.signature"
-        var jwtString = new JwtSecurityTokenHandler().WriteToken(jwtObject);
-        return jwtString;
+        var refreshToken = GenerateRefreshToken();
+        user.RefreshToken = BCrypt.Net.BCrypt.HashPassword(refreshToken, BCryptSaltWorkFactor); // Hash the refresh token before storing
+        user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7); // Example: 7 days validity
+        await _userRepository.UpdateUserAsync(user);
+
+        return new AuthenticatedResponse
+        {
+            AccessToken = jwtString,
+            RefreshToken = refreshToken
+        };
     }
 
     public async Task<User> AddUserAsync(CreateUserDto userDto)
@@ -78,6 +69,67 @@ public class AuthService : IAuthService
 
         await _userRepository.AddUserAsync(user);
         return user;
+    }
+
+    public string GenerateAccessToken(IEnumerable<Claim> claims)
+    {
+        // Configure JWT Signature
+        var signingCredentials = new SigningCredentials(
+            //                       Converts the secret key from a string to a byte array, since SymmetricSecurityKey expects a byte array    
+            new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config["Jwt:Key"])),
+            SecurityAlgorithms.HmacSha256Signature
+        );
+
+        // Configure custom claims
+
+
+        // Create JWT token object with claims and signature
+        var jwtObject = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(5),
+            signingCredentials: signingCredentials
+        );
+
+        // Serialize the JWT token to a string represented as "header.payload.signature"
+        return new JwtSecurityTokenHandler().WriteToken(jwtObject);
+    }
+
+    public string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+    }
+
+    public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+    {
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = true,
+            ValidateIssuer = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config["Jwt:Key"])),
+            ValidateLifetime = false, // We want to get claims from expired tokens as well
+            ValidIssuer = _config["Jwt:Issuer"],
+            ValidAudience = _config["Jwt:Audience"]
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        SecurityToken securityToken;
+        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+        var jwtSecurityToken = securityToken as JwtSecurityToken;
+
+        if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+        {
+            throw new SecurityTokenException("Invalid token");
+        }
+
+        return principal;
     }
 
 }

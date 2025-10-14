@@ -21,6 +21,5 @@ public class NotesDBContext : DbContext, INotesDBContext
             .WithOne(n => n.Folder)
             .HasForeignKey(n => n.FolderId)
             .OnDelete(DeleteBehavior.Cascade);
-
     }
 }

@@ -1,9 +1,42 @@
 import LoginForm from "../Modules/LoginForm";
 import RegisterForm from "../Modules/RegisterForm";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [errorMessage, setErrorMessage] = useState("");
+    const navigate = useNavigate();
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const token = localStorage.getItem('token');
+    const decodedToken = token ? jwtDecode(token) : null;
+
+    async function autoLogin() {
+        try {
+            const response = await fetch(`${apiUrl}/api/auth/refresh`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    accessToken: token,
+                }),
+                credentials: 'include' // Include cookies in the request
+            });
+            if (response.ok) {
+                navigate('/content', { replace: true });
+            } else {
+                console.error("Failed to refresh token");
+            }
+        } catch (error) {
+            console.error("Error refreshing token:", error);
+        }
+
+    }
+
+    useEffect(() => {
+        autoLogin();
+    }, []);
 
     return (
         <div className="flex flex-col justify-center items-center w-screen h-screen gap-7 bg-[#0f0f0f]">

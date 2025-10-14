@@ -13,6 +13,8 @@ public class User
 
     public List<Folder> Folders { get; set; } = new List<Folder>();
     public List<Note> Notes { get; set; } = new List<Note>();
+    public string? RefreshToken { get; set; }
+    public DateTime RefreshTokenExpiryTime { get; set; }
 }
 
 // DTO for creating a user

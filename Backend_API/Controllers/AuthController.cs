@@ -1,3 +1,4 @@
+using Backend_API.DBContext;
 using Backend_API.Models;
 using Backend_API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -10,14 +11,16 @@ namespace Backend_API.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly INotesDBContext _dbContext;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, INotesDBContext dbContext)
     {
         _authService = authService;
+        _dbContext = dbContext;
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(CreateUserDto userDto)
+    public async Task<IActionResult> Login(LoginUserDto userDto)
     {
         // Validates the annotations set in the CreateUserDto model
         // If the model is not valid, return error 400
@@ -28,8 +31,18 @@ public class AuthController : ControllerBase
 
         try
         {
-            var jwtString = await _authService.ValidateUserAsync(userDto);
-            return Ok(jwtString);
+            var authResponse = await _authService.ValidateUserAsync(userDto);
+
+            Response.Cookies.Append("refreshToken", authResponse.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.Now.AddDays(7)
+            });
+
+
+            return Ok(authResponse.AccessToken);
         }
         catch (UnauthorizedAccessException err)
         {
