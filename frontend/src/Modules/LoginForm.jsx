@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-export default function LoginForm() {
+export default function LoginForm({ setErrorMessage }) {
     const [error, setError] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -33,7 +33,8 @@ export default function LoginForm() {
                 }
 
                 setError(errorMessage || "Login failed");
-                console.error("Login error:", errorMessage);
+                //console.error("Login error:", errorMessage);
+                setErrorMessage(errorMessage);
             }
             else {
                 const token = await response.text();

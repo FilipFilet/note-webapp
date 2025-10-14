@@ -1,13 +1,26 @@
 services:
+  # notes_frontend:
+  #   build:
+  #     context: ../frontend
+  #     dockerfile: Dockerfile.dev
+  #   ports:
+  #     - "5173:5173"
+  #   #environment: #- VITE_API_URL=https://notes.api.filipalberg.dk/api
+  #   depends_on:
+  #     - api
+
   api:
     build:
       context: ..
       dockerfile: Backend_API/Dockerfile
-    depends_on: # the "mssql-db" service will spin up before the "api" service
+    depends_on:
+      # the "mssql-db" service will spin up before the "api" service
       - mssql-db
-    ports: # The api service is on port 80 on the container, and accessible on port 5000 on the host
+    ports:
+      # The api service is on port 80 on the container, and accessible on port 5000 on the host
       - "5000:8080"
-    environment: # Environment variables for the api service
+    environment:
+      # Environment variables for the api service
       - ConnectionStrings__DefaultConnection=${CONNECTION_STRING} # Set in a seperate .env file
 
   # Docker compose sets this database container up by itself
@@ -16,7 +29,8 @@ services:
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: ${MSSQL_PASSWORD} # Set in a seperate .env file
-    volumes: # makes a volume named "mssql-data", and stores persitent data in the path that follows.
+    volumes:
+      # makes a volume named "mssql-data", and stores persitent data in the path that follows.
       - mssql-data:/var/opt/mssql
     ports:
       - "1433:1433"

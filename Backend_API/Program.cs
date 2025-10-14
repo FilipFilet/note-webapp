@@ -93,7 +93,8 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(cfg =>
     {
-        cfg.AllowAnyOrigin() // Set to any origin for development. Will be restricted in production.
+        // Setup localhost 5173 too for future development. Just remember to add it in compose file as well
+        cfg.WithOrigins("https://notes.filipalberg.dk", "http://localhost:5173")
            .AllowAnyMethod()
            .AllowAnyHeader();
     });

@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-export default function RegisterForm() {
+export default function RegisterForm({ setErrorMessage }) {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const [username, setUsername] = useState("");
@@ -20,7 +20,8 @@ export default function RegisterForm() {
         if (!response.ok) {
             const errorData = await response.json();
             const errorMessage = Object.values(errorData.errors).flat().join(", ");
-            console.error("Registration failed:", errorMessage);
+            //console.error("Registration failed:", errorMessage);
+            setErrorMessage(errorMessage || "Registration failed");
         }
 
         alert("Registration successful!");
