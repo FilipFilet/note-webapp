@@ -11,12 +11,10 @@ namespace Backend_API.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
-    private readonly INotesDBContext _dbContext;
 
-    public AuthController(IAuthService authService, INotesDBContext dbContext)
+    public AuthController(IAuthService authService)
     {
         _authService = authService;
-        _dbContext = dbContext;
     }
 
     [HttpPost("login")]
@@ -33,16 +31,10 @@ public class AuthController : ControllerBase
         {
             var authResponse = await _authService.ValidateUserAsync(userDto);
 
-            Response.Cookies.Append("refreshToken", authResponse.RefreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.Now.AddDays(7)
-            });
 
 
-            return Ok(authResponse.AccessToken);
+
+            return Ok(authResponse);
         }
         catch (UnauthorizedAccessException err)
         {

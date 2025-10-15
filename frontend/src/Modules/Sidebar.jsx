@@ -20,8 +20,8 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
     const [showDeleteFolderModal, setShowDeleteFolderModal] = useState(false);
     const [itemToDelete, setItemToDelete] = useState({});
 
-    const token = localStorage.getItem('token')
-    const decodedToken = token ? jwtDecode(token) : null;
+    const accessToken = localStorage.getItem('accessToken')
+    const decodedToken = accessToken ? jwtDecode(accessToken) : null;
 
     // Functions
     function appendNote(note) {
@@ -90,7 +90,7 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${accessToken}`
             }
         });
 
@@ -135,7 +135,7 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${accessToken}`
                 }
             }
         );
@@ -165,7 +165,7 @@ export default function Sidebar({ updatedNoteData, setSelectedNote }) {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${accessToken}`
                     }
                 }
             );

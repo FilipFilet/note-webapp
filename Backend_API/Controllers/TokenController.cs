@@ -24,39 +24,42 @@ public class TokenController : ControllerBase
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh(TokenApiModel tokenApiModel)
     {
-        if (tokenApiModel == null) return BadRequest("Invalid client request");
+        if (tokenApiModel.AccessToken == null) return BadRequest("Access Token is required");
+        if (tokenApiModel.RefreshToken == null) return BadRequest("Refresh Token is required");
 
 
         string accessToken = tokenApiModel.AccessToken;
-        var refreshToken = Request.Cookies["refreshToken"];
+        var refreshToken = tokenApiModel.RefreshToken;
+
+        if (string.IsNullOrEmpty(refreshToken)) return BadRequest("Refresh Token is empty");
+        if (string.IsNullOrEmpty(accessToken)) return BadRequest("Access Token is empty");
 
         var principal = _authService.GetPrincipalFromExpiredToken(accessToken);
         var username = principal.Identity.Name; // this is mapped to the Name claim by default
 
-        // Retrieve the user by username from your data source
-        // This example assumes you have a method GetUserByUsernameAsync
+
         User? user = await _userRepository.GetUserByUsernameAsync(username);
 
-        if (user is null || !BCrypt.Net.BCrypt.Verify(refreshToken, user.RefreshToken) || user.RefreshTokenExpiryTime <= DateTime.Now)
+        // Validates the refresh token
+        if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
         {
-            return Unauthorized("Invalid refresh token");
+            return Unauthorized("Unable to verify refresh token");
         }
 
+        // Generates a new access token
         var newAccessToken = _authService.GenerateAccessToken(principal.Claims);
-        var newRefreshToken = _authService.GenerateRefreshToken();
 
-        Response.Cookies.Append("refreshToken", newRefreshToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTime.Now.AddDays(7)
-        });
+        // Generates a new refresh token and updates the cookie and database
+        var newRefreshToken = _authService.GenerateRefreshToken();
 
         user.RefreshToken = newRefreshToken;
         await _userRepository.UpdateUserAsync(user);
 
-        return Ok(newAccessToken);
+        return Ok(new AuthenticatedResponse
+        {
+            AccessToken = newAccessToken,
+            RefreshToken = newRefreshToken
+        });
 
     }
 
@@ -65,7 +68,7 @@ public class TokenController : ControllerBase
     {
         var username = User.Identity.Name;
         User? user = await _userRepository.GetUserByUsernameAsync(username);
-        if (user is null) return BadRequest();
+        if (user == null) return BadRequest();
 
         user.RefreshToken = null;
         await _userRepository.UpdateUserAsync(user);

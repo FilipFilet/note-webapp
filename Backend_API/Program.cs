@@ -17,7 +17,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Register the database context with dependency injection
-builder.Services.AddDbContext<INotesDBContext, NotesDBContext>(options => options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]));
+//builder.Services.AddDbContext<INotesDBContext, NotesDBContext>(options => options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"])); // For connecting to the local database
+builder.Services.AddDbContext<INotesDBContext, NotesDBContext>(options => options.UseSqlServer(builder.Configuration["ConnectionStrings:DeployConnection"])); // For connecting to the deployed database
 
 // Register repositories and services as scoped for each HTTP request
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
@@ -96,7 +97,8 @@ builder.Services.AddCors(options =>
         // Setup localhost 5173 too for future development. Just remember to add it in compose file as well
         cfg.WithOrigins("https://notes.filipalberg.dk", "http://localhost:5173")
            .AllowAnyMethod()
-           .AllowAnyHeader();
+           .AllowAnyHeader()
+           .AllowCredentials(); // Allows cookies to be sent cross-origin
     });
 });
 

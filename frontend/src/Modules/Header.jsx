@@ -4,7 +4,7 @@ import UserModal from "../Modals/UserModal"
 import { createPortal } from "react-dom"
 
 export default function Header() {
-    const token = localStorage.getItem("token")
+    const accessToken = localStorage.getItem("accessToken")
     const [user, setUser] = useState({})
 
     const [showUserModal, setShowUserModal] = useState(false)
@@ -13,7 +13,7 @@ export default function Header() {
     useState(async () => {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/users/me`, {
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${accessToken}`
             }
         })
 

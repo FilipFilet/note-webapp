@@ -37,8 +37,11 @@ export default function LoginForm({ setErrorMessage }) {
                 setErrorMessage(errorMessage);
             }
             else {
-                const token = await response.text();
-                localStorage.setItem('token', token);
+                const tokens = await response.json();
+                localStorage.setItem('accessToken', tokens.accessToken);
+                localStorage.setItem('refreshToken', tokens.refreshToken);
+
+                console.log(`accessToken: ${tokens.accessToken} \n refreshToken: ${tokens.refreshToken}`);
                 navigate('/Content');
             }
 

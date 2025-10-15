@@ -2,31 +2,39 @@ import LoginForm from "../Modules/LoginForm";
 import RegisterForm from "../Modules/RegisterForm";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { useEffect } from "react";
 
 export default function Login() {
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
-    const token = localStorage.getItem('token');
-    const decodedToken = token ? jwtDecode(token) : null;
+    const accessToken = localStorage.getItem('accessToken');
+    const decodedToken = accessToken ? jwtDecode(accessToken) : null;
 
     async function autoLogin() {
+        if (!accessToken) return; // No token, do nothing, prevent infinite loop
+
         try {
-            const response = await fetch(`${apiUrl}/api/auth/refresh`, {
+            const response = await fetch(`${apiUrl}/token/refresh`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
+                    "Authorization": `Bearer ${accessToken}`
                 },
                 body: JSON.stringify({
-                    accessToken: token,
-                }),
-                credentials: 'include' // Include cookies in the request
+                    accessToken: accessToken,
+                    refreshToken: localStorage.getItem('refreshToken')
+                })
             });
             if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('accessToken', data.accessToken);
+                localStorage.setItem('refreshToken', data.refreshToken);
                 navigate('/content', { replace: true });
             } else {
-                console.error("Failed to refresh token");
+                const errorData = await response.text();
+                console.error("Failed to refresh token:", errorData);
             }
         } catch (error) {
             console.error("Error refreshing token:", error);

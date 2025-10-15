@@ -10,9 +10,9 @@ export default function CreateNoteModal({ onClose, appendNote, folderId }) {
 
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    const token = localStorage.getItem('token');
+    const accessToken = localStorage.getItem('accessToken');
 
-    const tokenToLog = jwtDecode(token);
+    const tokenToLog = jwtDecode(accessToken);
 
     async function createNote(e) {
         console.log(tokenToLog);
@@ -23,7 +23,7 @@ export default function CreateNoteModal({ onClose, appendNote, folderId }) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${accessToken}`
             },
             body: JSON.stringify({ title: noteTitle, content: '', folderId: folderId })
         });

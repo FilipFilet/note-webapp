@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export default function CreateFolderModal({ onClose, appendFolder }) {
     const apiUrl = import.meta.env.VITE_API_URL;
-    const token = localStorage.getItem('token');
+    const accessToken = localStorage.getItem('accessToken');
 
     const [folderName, setFolderName] = useState("");
 
@@ -13,7 +13,7 @@ export default function CreateFolderModal({ onClose, appendFolder }) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${accessToken}`
             },
             body: JSON.stringify({ name: folderName })
         });

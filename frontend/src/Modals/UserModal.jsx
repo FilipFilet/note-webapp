@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { jwtDecode } from "jwt-decode";
 import { useRef } from "react";
@@ -11,12 +11,25 @@ export default function UserModal({ currentUser, onClose, setUser }) {
 
     const navigate = useNavigate();
 
-    const token = localStorage.getItem("token");
+    const accessToken = localStorage.getItem("accessToken");
 
 
-    function logout() {
-        localStorage.removeItem("token");
-        navigate("/"); // Redirect to the home page after logout
+    async function logout() {
+        const response = await fetch(`${apiUrl}/token/revoke`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "authorization": `Bearer ${accessToken}`
+            },
+        });
+
+        if (response.ok) {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            navigate("/"); // Redirect to the home page after logout
+        } else {
+            alert(`Logout failed \n ${await response.text()}`);
+        }
     }
 
     async function updateUsername(newName) {
@@ -25,7 +38,7 @@ export default function UserModal({ currentUser, onClose, setUser }) {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${accessToken}`
             },
             body: JSON.stringify({ username: newName })
         });
@@ -52,7 +65,7 @@ export default function UserModal({ currentUser, onClose, setUser }) {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${accessToken}`
             }
         });
 

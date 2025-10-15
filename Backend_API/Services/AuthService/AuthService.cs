@@ -38,7 +38,7 @@ public class AuthService : IAuthService
         var jwtString = GenerateAccessToken(claims);
 
         var refreshToken = GenerateRefreshToken();
-        user.RefreshToken = BCrypt.Net.BCrypt.HashPassword(refreshToken, BCryptSaltWorkFactor); // Hash the refresh token before storing
+        user.RefreshToken = refreshToken;
         user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7); // Example: 7 days validity
         await _userRepository.UpdateUserAsync(user);
 
@@ -124,7 +124,7 @@ public class AuthService : IAuthService
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
         var jwtSecurityToken = securityToken as JwtSecurityToken;
 
-        if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+        if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature, StringComparison.InvariantCultureIgnoreCase))
         {
             throw new SecurityTokenException("Invalid token");
         }

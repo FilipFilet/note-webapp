@@ -11,7 +11,7 @@ export default function Editor({ selectedNote, setUpdatedNoteData }) {
     // The note that has been updated. Represents the previous selected note with a useRef that doesnt get updated on each render
     const prevSelectedNoteRef = useRef(note);
 
-    const token = localStorage.getItem('token');
+    const accessToken = localStorage.getItem('accessToken');
 
     // Updates when clicking another note
     async function updateNote() {
@@ -29,7 +29,7 @@ export default function Editor({ selectedNote, setUpdatedNoteData }) {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${accessToken}`
                 }
             }
         )
@@ -46,7 +46,7 @@ export default function Editor({ selectedNote, setUpdatedNoteData }) {
                 body: JSON.stringify(prevSelectedNoteRef.current),
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${accessToken}`
                 },
             }
         );

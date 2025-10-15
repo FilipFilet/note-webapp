@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 
 export default function PublicRoute({ children }) {
-    const [loading, setLoading] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
+        debugger;
         const tryRefresh = async () => {
             try {
-                const res = await fetch("https://localhost:5001/api/auth/refresh", {
+                const res = await fetch(`${apiUrl}/token/refresh`, {
                     method: "POST",
                     credentials: "include", // sends HttpOnly cookie automatically
                     headers: { "Content-Type": "application/json" },
@@ -20,19 +21,18 @@ export default function PublicRoute({ children }) {
                     localStorage.setItem("token", data.accessToken);
                     setIsLoggedIn(true); // valid refresh token
                 } else {
+                    const errorData = await res.json();
+                    console.error("Failed to refresh token:", errorData);
                     setIsLoggedIn(false);
                 }
             } catch (err) {
                 setIsLoggedIn(false);
-            } finally {
-                setLoading(false);
             }
-        };
 
-        tryRefresh();
+            tryRefresh();
+        }
+
     }, []);
-
-    if (loading) return <div>Checking session...</div>;
 
     if (isLoggedIn) return <Navigate to="/content" replace />;
 

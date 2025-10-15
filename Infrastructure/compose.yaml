@@ -1,13 +1,12 @@
 services:
-  # notes_frontend:
-  #   build:
-  #     context: ../frontend
-  #     dockerfile: Dockerfile.dev
-  #   ports:
-  #     - "5173:5173"
-  #   #environment: #- VITE_API_URL=https://notes.api.filipalberg.dk/api
-  #   depends_on:
-  #     - api
+  notes_frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.prod
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
 
   api:
     build:

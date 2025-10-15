@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 export default function EditFolderModal({ selectedFolder, onClose, handleUpdateFolder }) {
     const apiUrl = import.meta.env.VITE_API_URL;
-    const token = localStorage.getItem('token')
+    const accessToken = localStorage.getItem('accessToken')
 
     const [folder, setFolder] = useState(selectedFolder);
 
@@ -14,7 +14,7 @@ export default function EditFolderModal({ selectedFolder, onClose, handleUpdateF
             body: JSON.stringify({ name: folder.name }),
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${accessToken}`
             }
         })
 
